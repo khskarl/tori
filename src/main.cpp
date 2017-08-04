@@ -81,10 +81,7 @@ int main(int argc, char * argv[]) {
 			            ImGui::GetIO().Framerate);
 			ImGui::Text(ImGui::IsMouseHoveringAnyWindow() ? "Yes" : "No");
 			ImGui::Image((void*)sphere->m_model.m_albedo->m_id, ImVec2(128, 128));
-			ImGui::Image((void*)sphere->m_model.m_normal->m_id, ImVec2(128, 128));
-			ImGui::Image((void*)sphere->m_model.m_roughness->m_id, ImVec2(128, 128));
-			ImGui::Image((void*)sphere->m_model.m_metalness->m_id, ImVec2(128, 128));
-			ImGui::Image((void*)sphere->m_model.m_ao->m_id, ImVec2(128, 128));
+			ImGui::Image((void*)renderer.m_mainFramebuffer.GetColorTextureHandle(), ImVec2(128, 128));
 		}
 
 		if (Context::IsKeyDown(GLFW_KEY_W))	mCamera.MoveForward( 10 * dt);

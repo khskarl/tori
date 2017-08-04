@@ -29,6 +29,7 @@ public:
 class Program
 {
 public:
+	Program ();
 	Program (std::string filename_vs, std::string filename_fs);
 	~Program ();
 

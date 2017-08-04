@@ -1,6 +1,7 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
+#include "Framebuffer.hpp"
 #include "Camera.hpp"
 #include "Program.hpp"
 #include "Mesh.hpp"
@@ -13,9 +14,13 @@
 
 class Renderer
 {
-private:
+public:
 	std::vector<LightSource> m_lightSources;
 	std::vector<GameObject*> m_renderQueue;
+
+	uint32_t m_quadVAO;
+	Framebuffer m_mainFramebuffer;
+	Program* m_screenProgram;
 
 public:
 	bool m_bRenderWireframe = false;

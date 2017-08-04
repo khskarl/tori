@@ -10,17 +10,17 @@
 
 #include "TextureLoader.hpp"
 #include "MeshLoader.hpp"
+#include "../Settings.hpp"
 
 Renderer::Renderer () {}
 Renderer::~Renderer () {}
 
 void Renderer::Setup () {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
 
 	// Load and setup Programs
 	m_mainProgram = new Program("pbr.vs", "pbr.fs");
+	m_screenProgram = new Program("passthrough.vs", "passthrough.fs");
+	m_screenProgram->SetUniform("screenTexture", 0);
 
 	// Load and setup Meshes and Textures
 	Data::LoadAllMeshes();
@@ -39,9 +39,41 @@ void Renderer::Setup () {
 	m_lightSources[1].color    = glm::vec3(20.f, 20.f, 50.f);
 	m_lightSources[2].color    = glm::vec3(20.f, 40.f, 40.f);
 	m_lightSources[3].color    = glm::vec3(50.f, 10.f, 10.f);
+
+	// Setup main framebuffer
+	float quadVertices[] = {
+// Positions   | UVs
+	-1.0f,  1.0f,  0.0f, 1.0f,
+	-1.0f, -1.0f,  0.0f, 0.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+
+	-1.0f,  1.0f,  0.0f, 1.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	 1.0f,  1.0f,  1.0f, 1.0f
+	};
+	// screen quad VAO
+	uint32_t quadVBO;
+	glGenVertexArrays(1, &m_quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glBindVertexArray(m_quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//
+	m_mainFramebuffer.Setup(Settings::ScreenWidth, Settings::ScreenHeight);
+	m_mainFramebuffer.Bind();
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::RenderFrame () {
+	// Draw all objects into main framebuffer
+	m_mainFramebuffer.Bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (m_bRenderWireframe) {
@@ -61,17 +93,12 @@ void Renderer::RenderFrame () {
 	m_mainProgram->SetUniform("gNumLights", m_lightSources.size());
 	for (size_t i = 0; i < m_lightSources.size(); i++) {
 		LightSource* light = &m_lightSources[i];
-		// std::cout << light->direction.x << " " << light->direction.y << " " << light->direction.z << "\n";
 		std::string lightsStr = "gLights[" + std::to_string(i) + "]";
 		m_mainProgram->SetUniform(lightsStr + ".position",  light->position);
 		m_mainProgram->SetUniform(lightsStr + ".direction", light->direction);
 		m_mainProgram->SetUniform(lightsStr + ".color",     light->color);
 		m_mainProgram->SetUniform(lightsStr + ".type",      light->type);
-
-		// std::cout << lightsStr + ".position" << "\n";
-
 	}
-	m_mainProgram->SetUniform("gLights[0].direction",  glm::vec3(0, -1, 0));
 
 	for (GameObject* const object : m_renderQueue) {
 		Model* const model = &object->m_model;
@@ -92,17 +119,24 @@ void Renderer::RenderFrame () {
 		model->m_mesh->Render();
 	}
 
+	// Draw main framebuffer
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+	//
+	m_screenProgram->Use();
+	glBindVertexArray(m_quadVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_mainFramebuffer.GetColorTextureHandle());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	ImGui::Render();
 }
 
 void Renderer::Submit (GameObject* const object) {
 	m_renderQueue.push_back(object);
 }
-
-// void Renderer::RequestResources (GameObject* const object) {
-//
-// }
 
 void Renderer::SetActiveCamera (Camera* const camera) {
 	p_activeCamera = camera;

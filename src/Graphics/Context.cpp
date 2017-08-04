@@ -5,9 +5,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw_gl3.h>
+
+#include "../Settings.hpp"
 
 static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -43,7 +44,8 @@ bool Initialize () {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 	glfwWindowHint(GLFW_RESIZABLE, true);
 	glfwWindowHint(GLFW_SAMPLES, 8);
-	mWindow = glfwCreateWindow(1280, 800, "I am a happy window :D", nullptr, nullptr);
+	mWindow = glfwCreateWindow(Settings::ScreenWidth, Settings::ScreenHeight,
+	                           "I am a happy window :D", nullptr, nullptr);
 
 	if (mWindow == nullptr) {
 		std::cerr << "Failed to Create OpenGL Context\n";
