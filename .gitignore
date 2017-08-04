@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+
+# Filter executable and configutations files
+bin/
+*.ini
+
+# Filter everything that isn't a .lua because we don't want to track Project Files (Make, CMAKE, Visual Studio)
+
+# Filter everything...
+scripts/*
+
+# ...Except lua files
+!scripts/*.lua
+
