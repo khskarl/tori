@@ -13,7 +13,7 @@ project "tori"
   links {
     "GL",
     "GLEW",
-    "glfw3",
+    "glfw",
     "imgui",
   }
 

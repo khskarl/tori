@@ -18,7 +18,7 @@ uniform sampler2D texOcclusion;
 //
 
 #define DIRECTIONAL 0
-#define POINT       0
+#define POINT       1
 #define MAX_LIGHTS 4
 uniform struct Light
 {
@@ -97,7 +97,7 @@ void main()
 		vec3 kD = vec3(1.0) - F;
 
 		float NdotL = max(dot(N, L), 0.0);
-		reflectance += (kD * albedo / PI + specular) * vec3(2.0) * NdotL;
+		reflectance += (kD * albedo / PI + specular) * vec3(2.0) * gLights[i].color * NdotL;
 	}
 
 
