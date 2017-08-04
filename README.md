@@ -1,4 +1,4 @@
-# Tori Graphics Engine
+# Tori
 
 Too work in progress for a description.
 
