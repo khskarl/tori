@@ -69,12 +69,14 @@ void Renderer::Setup () {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 }
 
 void Renderer::RenderFrame () {
 	// Draw all objects into main framebuffer
 	m_mainFramebuffer.Bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
 	if (m_bRenderWireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

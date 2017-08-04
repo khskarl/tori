@@ -1,11 +1,11 @@
 #version 400 core
 
-in vec3 outPosW;
-in vec3 outNormalW;
-in vec2 outTexCoord;
-in vec4 outColor;
+in vec3 vPosW;
+in vec3 vNormalW;
+in vec2 vTexCoord;
+in vec4 vColor;
 
-out vec4 FragColor;
+out vec4 fragmentColor;
 
 uniform vec3 cameraPos;
 
@@ -60,13 +60,13 @@ vec3 FresnelSchlick (vec3 N, vec3 V, vec3 F0) {
 
 void main()
 {
-	vec3 N = outNormalW;
-	vec3 V = normalize(cameraPos - outPosW);
+	vec3 N = vNormalW;
+	vec3 V = normalize(cameraPos - vPosW);
 
-	vec3  albedo    = texture(texAlbedo,    outTexCoord).rgb;
+	vec3  albedo    = texture(texAlbedo,    vTexCoord).rgb;
 	albedo = pow(albedo, vec3(2.2));
-	float roughness = texture(texRoughness, outTexCoord).r;
-	float metalness = texture(texMetalness, outTexCoord).r;
+	float roughness = texture(texRoughness, vTexCoord).r;
+	float metalness = texture(texMetalness, vTexCoord).r;
 
 	vec3 reflectance = vec3(0);
 	for(int i = 0; i < gNumLights; i++)
@@ -79,8 +79,8 @@ void main()
 		}
 		else if (gLights[i].type == POINT)
 		{
-			lightDirection = normalize(gLights[i].position - outPosW);
-			float d = length(gLights[i].position - outPosW);
+			lightDirection = normalize(gLights[i].position - vPosW);
+			float d = length(gLights[i].position - vPosW);
 			attenuation = 1.0 / (d * d);
 		}
 		vec3 radiance = gLights[i].color * attenuation;
@@ -103,13 +103,13 @@ void main()
 	}
 
 
-	float ao    = texture(texOcclusion, outTexCoord).r;
+	float ao    = texture(texOcclusion, vTexCoord).r;
 	vec3 ambient = vec3(0.01) * albedo * ao;
 	vec3 color = ambient + reflectance;
 
 	// HDR Tonemapping & Gamma Correction
 	color = color / (color + vec3(1.0));
 	color = pow(color, vec3(1.0/2.2));
-	FragColor = vec4(color, 1.0);
+	fragmentColor = vec4(color, 1.0);
 	// color.xyz = pow(color.xyz, vec3(1.0/2.2));
 }

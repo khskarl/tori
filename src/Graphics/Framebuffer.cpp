@@ -7,7 +7,6 @@
 #include "../Settings.hpp"
 
 Framebuffer::Framebuffer () {
-	Setup(Settings::ScreenWidth, Settings::ScreenHeight);
 }
 
 void Framebuffer::Setup (uint32_t width, uint32_t height) {
@@ -24,10 +23,8 @@ void Framebuffer::Setup (uint32_t width, uint32_t height) {
 	// Generate Depth+Stencil texture
 	glGenTextures(1, &m_depthTexture_id);
 	glBindTexture(GL_TEXTURE_2D, m_depthTexture_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8,
-							 width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24,
+							 width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
 	// Attach Color Texture to Framebuffer
 	glGenFramebuffers(1, &m_id);
@@ -37,10 +34,9 @@ void Framebuffer::Setup (uint32_t width, uint32_t height) {
 												 GL_TEXTURE_2D,
 												 m_colorTexture_id, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER,
-												 GL_DEPTH_STENCIL_ATTACHMENT,
+												 GL_DEPTH_ATTACHMENT,
 												 GL_TEXTURE_2D,
 												 m_depthTexture_id, 0);
-	std::cout << m_id << "\n";
 
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "[ERROR] Framebuffer not complete \n";
