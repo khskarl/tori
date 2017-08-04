@@ -40,8 +40,9 @@ bool Initialize () {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+	glfwWindowHint(GLFW_RESIZABLE, true);
+	glfwWindowHint(GLFW_SAMPLES, 8);
 	mWindow = glfwCreateWindow(1280, 800, "I am a happy window :D", nullptr, nullptr);
 
 	if (mWindow == nullptr) {

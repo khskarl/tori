@@ -76,7 +76,6 @@ int main(int argc, char * argv[]) {
 		{
 			if (ImGui::Button("Reload shaders")) renderer.m_mainProgram->Reload();
 			ImGui::Checkbox("Wireframe", &renderer.m_bRenderWireframe);
-			// ImGui::ColorEdit3("clear color", (float*)&clear_color);
 			ImGui::Text("%.3f ms/frame (%.1f FPS)",
 			            1000.0f / ImGui::GetIO().Framerate,
 			            ImGui::GetIO().Framerate);

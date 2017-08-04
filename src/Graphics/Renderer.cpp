@@ -32,12 +32,13 @@ void Renderer::Setup () {
 	m_lightSources.push_back(LightSource(LightSource::Type::Point));
 	m_lightSources.push_back(LightSource(LightSource::Type::Point));
 
-	m_lightSources[1].color    = glm::vec3(0.8f, 0.1f, 0.1f);
-	m_lightSources[1].position = glm::vec3(-3, 0, 0);
-	m_lightSources[2].color    = glm::vec3(0.1f, 0.8f, 0.1f);
-	m_lightSources[2].position = glm::vec3(2, -2, 10);
-	m_lightSources[3].color    = glm::vec3(0.8f, 0.1f, 0.1f);
-	m_lightSources[3].position = glm::vec3(2, 5, 5);
+	m_lightSources[0].direction = glm::normalize(glm::vec3(0.3f, -1.f, 0.5f));
+	m_lightSources[1].position = glm::vec3(-3,  0,  0);
+	m_lightSources[2].position = glm::vec3( 2, -2, 10);
+	m_lightSources[3].position = glm::vec3( 2,  -5,  5);
+	m_lightSources[1].color    = glm::vec3(20.f, 20.f, 50.f);
+	m_lightSources[2].color    = glm::vec3(20.f, 40.f, 40.f);
+	m_lightSources[3].color    = glm::vec3(50.f, 10.f, 10.f);
 }
 
 void Renderer::RenderFrame () {
@@ -65,7 +66,6 @@ void Renderer::RenderFrame () {
 		m_mainProgram->SetUniform(lightsStr + ".position",  light->position);
 		m_mainProgram->SetUniform(lightsStr + ".direction", light->direction);
 		m_mainProgram->SetUniform(lightsStr + ".color",     light->color);
-		m_mainProgram->SetUniform(lightsStr + ".radius",    light->radius);
 		m_mainProgram->SetUniform(lightsStr + ".type",      light->type);
 
 		// std::cout << lightsStr + ".position" << "\n";

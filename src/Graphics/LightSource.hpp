@@ -7,7 +7,6 @@ struct LightSource {
 	glm::vec3 position  = glm::vec3(0, 0, 0);
 	glm::vec3 direction = glm::vec3(0, -1, 0);
 	glm::vec3 color     = glm::vec3(1, 1, 1);
-	float radius = 3.0f;
 
 	enum Type {
 		Directional = 0,

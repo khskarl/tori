@@ -37,9 +37,9 @@ bin/
 
 # Filter everything that isn't a .lua because we don't want to track Project Files (Make, CMAKE, Visual Studio)
 
-# Filter everything...
+# Filter everything in Scripts Except lua files
 scripts/*
-
-# ...Except lua files
 !scripts/*.lua
+
+#
 

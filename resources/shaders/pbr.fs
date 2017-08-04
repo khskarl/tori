@@ -25,7 +25,6 @@ uniform struct Light
 	vec3 position;
 	vec3 direction;
 	vec3 color;
-	float radius;
 	int type;
 } gLights[MAX_LIGHTS];
 
@@ -73,7 +72,7 @@ void main()
 	for(int i = 0; i < gNumLights; i++)
 	{
 		vec3 lightDirection;
-
+		float attenuation = 1.0;
 		if (gLights[i].type == DIRECTIONAL)
 		{
 			lightDirection = -normalize(gLights[i].direction);
@@ -81,7 +80,10 @@ void main()
 		else if (gLights[i].type == POINT)
 		{
 			lightDirection = normalize(gLights[i].position - outPosW);
+			float d = length(gLights[i].position - outPosW);
+			attenuation = 1.0 / (d * d);
 		}
+		vec3 radiance = gLights[i].color * attenuation;
 
 		vec3 L = lightDirection;
 		vec3 H = normalize((L + V));
@@ -97,12 +99,12 @@ void main()
 		vec3 kD = vec3(1.0) - F;
 
 		float NdotL = max(dot(N, L), 0.0);
-		reflectance += (kD * albedo / PI + specular) * vec3(2.0) * gLights[i].color * NdotL;
+		reflectance += (kD * albedo / PI + specular) * vec3(2.0) * radiance * NdotL;
 	}
 
 
 	float ao    = texture(texOcclusion, outTexCoord).r;
-	vec3 ambient = vec3(0.03) * albedo * ao;
+	vec3 ambient = vec3(0.01) * albedo * ao;
 	vec3 color = ambient + reflectance;
 
 	// HDR Tonemapping & Gamma Correction
