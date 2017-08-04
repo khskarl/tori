@@ -107,9 +107,6 @@ void main()
 	vec3 ambient = vec3(0.01) * albedo * ao;
 	vec3 color = ambient + reflectance;
 
-	// HDR Tonemapping & Gamma Correction
-	color = color / (color + vec3(1.0));
-	color = pow(color, vec3(1.0/2.2));
 	fragmentColor = vec4(color, 1.0);
 	// color.xyz = pow(color.xyz, vec3(1.0/2.2));
 }

@@ -16,7 +16,7 @@ void Framebuffer::Setup (uint32_t width, uint32_t height) {
 	// Generate color texture
 	glGenTextures(1, &m_colorTexture_id);
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

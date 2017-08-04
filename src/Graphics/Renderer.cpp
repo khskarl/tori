@@ -66,7 +66,7 @@ void Renderer::Setup () {
 	//
 	m_mainFramebuffer.Setup(Settings::ScreenWidth, Settings::ScreenHeight);
 	m_mainFramebuffer.Bind();
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.005f, 0.005f, 0.005f, 1.0f);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_STENCIL_TEST);
