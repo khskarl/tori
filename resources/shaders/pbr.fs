@@ -28,9 +28,8 @@ uniform struct Light
 	int type;
 } gLights[MAX_LIGHTS];
 
-uniform int  gNumLights;
+uniform int gNumLights;
 
-const vec3 lightDir = normalize(vec3(1, -1, 1));
 const float PI = 3.14159265359;
 
 float DistributionGGX (vec3 N, vec3 H, float roughness) {

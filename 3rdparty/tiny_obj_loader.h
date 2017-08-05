@@ -229,6 +229,8 @@ typedef struct {
   std::vector<real_t> vertices;   // 'v'
   std::vector<real_t> normals;    // 'vn'
   std::vector<real_t> texcoords;  // 'vt'
+  std::vector<real_t> tangents;   // ''
+  std::vector<real_t> binormals;  // ''
 } attrib_t;
 
 typedef struct callback_t_ {
@@ -1411,6 +1413,8 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
   attrib->vertices.clear();
   attrib->normals.clear();
   attrib->texcoords.clear();
+  attrib->tangents.clear();
+  attrib->binormals.clear();
   shapes->clear();
 
   std::stringstream errss;
