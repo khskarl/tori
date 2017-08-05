@@ -1,9 +1,21 @@
 #version 400 core
 
+#define DIRECTIONAL 0
+#define POINT       1
+#define MAX_LIGHTS 4
+uniform struct Light
+{
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+	int type;
+} gLights[MAX_LIGHTS];
+
 in vec3 vPosW;
 in vec3 vNormalW;
 in vec2 vTexCoord;
 in vec4 vColor;
+in mat3 vTBN;
 
 out vec4 fragmentColor;
 
@@ -17,16 +29,6 @@ uniform sampler2D texOcclusion;
 
 //
 
-#define DIRECTIONAL 0
-#define POINT       1
-#define MAX_LIGHTS 4
-uniform struct Light
-{
-	vec3 position;
-	vec3 direction;
-	vec3 color;
-	int type;
-} gLights[MAX_LIGHTS];
 
 uniform int gNumLights;
 
@@ -59,14 +61,19 @@ vec3 FresnelSchlick (vec3 N, vec3 V, vec3 F0) {
 
 void main()
 {
-	vec3 N = vNormalW;
-	vec3 V = normalize(cameraPos - vPosW);
 
 	vec3  albedo    = texture(texAlbedo,    vTexCoord).rgb;
 	albedo = pow(albedo, vec3(2.2));
+	vec3  normal    = texture(texNormal,    vTexCoord).rgb;
+	normal = normalize(normal * 2.0 - 1.0);
+	normal = mix(vec3(0, 0, 1), normal, 1.0);
+	normal = normalize(vTBN * normal);
+
 	float roughness = texture(texRoughness, vTexCoord).r;
 	float metalness = texture(texMetalness, vTexCoord).r;
 
+	vec3 N = normal;
+	vec3 V = normalize(cameraPos - vPosW);
 	vec3 reflectance = vec3(0);
 	for(int i = 0; i < gNumLights; i++)
 	{
@@ -107,5 +114,4 @@ void main()
 	vec3 color = ambient + reflectance;
 
 	fragmentColor = vec4(color, 1.0);
-	// color.xyz = pow(color.xyz, vec3(1.0/2.2));
 }

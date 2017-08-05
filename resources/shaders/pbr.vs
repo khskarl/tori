@@ -11,6 +11,7 @@ out vec3 vPosW;
 out vec3 vNormalW;
 out vec2 vTexCoord;
 out vec4 vColor;
+out mat3 vTBN;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -24,5 +25,8 @@ void main()
 	vColor    = aColor;
 	gl_Position = projection * view * model * vec4(aPosition, 1.0);
 
-	mat3 TBN = transpose(mat3(aTangent, aBinormal, aNormal));
+	vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+	vec3 B = normalize(vec3(model * vec4(aBinormal, 0.0)));
+	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+	vTBN = (mat3(T, B, N));
 }
