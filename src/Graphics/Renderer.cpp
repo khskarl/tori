@@ -25,6 +25,8 @@ void Renderer::Setup () {
 	// Load and setup Meshes and Textures
 	Data::LoadAllMeshes();
 	Data::LoadAllTextures();
+	m_skyboxMesh = Data::LoadMesh("cube.obj");
+	m_skyboxTexture = Data::LoadTexture("default.png");
 
 	// Setup lights here because lazy
 	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
@@ -63,9 +65,11 @@ void Renderer::Setup () {
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-	//
+	// Setup main framebuffer
 	m_mainFramebuffer.Setup(Settings::ScreenWidth, Settings::ScreenHeight);
 	m_mainFramebuffer.Bind();
+
+	// Setup OpenGL settings
 	glClearColor(0.005f, 0.005f, 0.005f, 1.0f);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -119,6 +123,15 @@ void Renderer::RenderFrame () {
 		m_mainProgram->SetUniform("model", modelMatrix);
 		model->m_mesh->Render();
 	}
+
+	// Render skybox
+	glFrontFace(GL_CW);
+	glDepthMask(GL_FALSE);
+	m_mainProgram->SetUniform("view",  glm::mat4(glm::mat3(p_activeCamera->GetViewMatrix())));
+	m_mainProgram->SetUniform("model", glm::mat4());
+	m_skyboxMesh->Render();
+	glDepthMask(GL_TRUE);
+	glFrontFace(GL_CCW);
 
 	// Draw main framebuffer
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
