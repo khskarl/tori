@@ -1,3 +1,4 @@
+
 #include "MeshLoader.hpp"
 
 #include <iostream>
@@ -47,6 +48,18 @@ Mesh* LoadMesh (const std::string filename) {
 		std::cerr << error_message << std::endl;
 	}
 
+	if (attrib.vertices.size() == 0) {
+		std::cerr << "[ERROR] No positions in " << filename << std::endl;
+	}
+
+	if (attrib.texcoords.size() == 0) {
+		std::cerr << "[ERROR] No texture coordinates in " << filename << std::endl;
+	}
+
+	if (attrib.normals.size() == 0) {
+		std::cerr << "[ERROR] No normals in " << filename << std::endl;
+	}
+
 	if (!result) {
 		return nullptr;
 	}
@@ -74,7 +87,6 @@ Mesh* LoadMesh (const std::string filename) {
 			};
 
 			glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
 			// Check for duplicates, currently only comparing by position
 			int duplicateIndex = -1;
 			for (size_t i = 0; i < mesh->m_vertices.positions.size(); i++) {

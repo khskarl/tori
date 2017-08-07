@@ -59,11 +59,11 @@ int main(int argc, char * argv[]) {
 
 	GameObject* bamboo = new GameObject();
 	bamboo->m_model = Model("sphere.obj",
-	                        "bamboo_albedo.png",
-	                        "bamboo_normal.png",
-	                        "bamboo_roughness.png",
-	                        "bamboo_metalness.png",
-	                        "bamboo_ao.png");
+	                        "rusted_albedo.png",
+	                        "rusted_normal.png",
+	                        "rusted_roughness.png",
+	                        "rusted_metalness.png",
+	                        "rusted_ao.png");
 	bamboo->m_position = glm::vec3(5, 0, 5);
 
 	renderer.Submit(sphere);
