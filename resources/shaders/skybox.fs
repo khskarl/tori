@@ -4,7 +4,7 @@ out vec4 fragmentColor;
 in vec3 vTexCoords;
 // in vec4 gl_FragCoord;
 
-uniform sampler2D skyboxTexture;
+uniform samplerCube skyboxTexture;
 
 void main()
 {

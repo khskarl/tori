@@ -23,6 +23,8 @@ public:
 	Framebuffer m_mainFramebuffer;
 	Program* m_screenProgram;
 
+	void SetupSkybox (std::string texture_name);
+
 public:
 	bool m_bRenderWireframe = false;
 
@@ -30,6 +32,7 @@ public:
 	Camera* p_activeCamera = nullptr;
 
 	// Skybox related variables
+	Model* m_skyboxModel = nullptr;
 	Mesh*    m_skyboxMesh = nullptr;
 	Texture* m_skyboxTexture = nullptr;
 	Program* m_skyboxProgram = nullptr;
