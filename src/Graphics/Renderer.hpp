@@ -29,6 +29,7 @@ public:
 	Program* m_mainProgram = nullptr;
 	Camera* p_activeCamera = nullptr;
 
+	// Skybox related variables
 	Mesh*    m_skyboxMesh = nullptr;
 	Texture* m_skyboxTexture = nullptr;
 	Program* m_skyboxProgram = nullptr;

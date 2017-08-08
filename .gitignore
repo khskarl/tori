@@ -7,6 +7,9 @@
 *.o
 *.obj
 
+# Unfilter .obj files in meshes folders
+# !resources/models/*.obj
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -42,4 +45,3 @@ scripts/*
 !scripts/*.lua
 
 #
-

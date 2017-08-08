@@ -9,6 +9,8 @@ namespace Data {
 
 void LoadAllTextures ();
 Texture* LoadTexture (const std::string filename);
+Texture* LoadCubemap (const std::string filename);
+Texture* LoadPanorama (const std::string filename);
 
 }
 

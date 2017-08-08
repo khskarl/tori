@@ -22,11 +22,13 @@ void Renderer::Setup () {
 	m_screenProgram = new Program("passthrough.vs", "passthrough.fs");
 	m_screenProgram->SetUniform("screenTexture", 0);
 
+	m_skyboxProgram = new Program("equirectangular_to_cube.vs", "equirectangular_to_cube.fs");
+
 	// Load and setup Meshes and Textures
 	Data::LoadAllMeshes();
 	Data::LoadAllTextures();
 	m_skyboxMesh = Data::LoadMesh("cube.obj");
-	m_skyboxTexture = Data::LoadTexture("default.png");
+	m_skyboxTexture = Data::LoadPanorama("newport_loft_env.hdr");
 
 	// Setup lights here because lazy
 	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
@@ -73,6 +75,7 @@ void Renderer::Setup () {
 	glClearColor(0.005f, 0.005f, 0.005f, 1.0f);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 }
 
 void Renderer::RenderFrame () {
@@ -125,16 +128,21 @@ void Renderer::RenderFrame () {
 	}
 
 	// Render skybox
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glFrontFace(GL_CW);
 	glDepthMask(GL_FALSE);
-	m_mainProgram->SetUniform("view",  glm::mat4(glm::mat3(p_activeCamera->GetViewMatrix())));
-	m_mainProgram->SetUniform("model", glm::mat4());
+	m_skyboxProgram->Use();
+	m_skyboxProgram->SetUniform("view",  glm::mat4(glm::mat3(p_activeCamera->GetViewMatrix())));
+	m_skyboxProgram->SetUniform("projection",  p_activeCamera->GetProjectionMatrix());
+	m_skyboxProgram->SetUniform("skyboxTexture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_skyboxTexture->m_id);
+
 	m_skyboxMesh->Render();
 	glDepthMask(GL_TRUE);
 	glFrontFace(GL_CCW);
 
 	// Draw main framebuffer
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);

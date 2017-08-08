@@ -30,7 +30,6 @@ void LoadAllTextures () {
 	Data::LoadTexture ("woodfloor_ao.png");
 }
 
-
 Texture* LoadTexture (const std::string filename) {
 	// Check if texture is already loaded
 	Texture* loadedTexture = GetLoadedTexture(filename);
@@ -84,6 +83,55 @@ Texture* LoadTexture (const std::string filename) {
 		stbi_image_free(data);
 		return nullptr;
 	}
+}
+
+Texture* LoadPanorama (const std::string filename) {
+	// Check if texture is already loaded
+	Texture* loadedTexture = GetLoadedTexture(filename);
+	if (loadedTexture != nullptr) {
+		return loadedTexture;
+	}
+
+	// If texture wasn't loaded, load it
+	std::string filepath = "resources/textures/" + filename;
+	stbi_set_flip_vertically_on_load(true);
+	int32_t width, height, numChannels;
+	float* data = stbi_loadf(filepath.c_str(), &width, &height, &numChannels, 0);
+
+	if (data) {
+		uint32_t textureID;
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+
+		Texture* texture = new Texture();
+		texture->m_filename = filename;
+		texture->m_type     = Texture::Type::Cubemap;
+		texture->m_id       = (uint16_t) textureID;
+		texture->m_width    = (uint16_t) width;
+		texture->m_height   = (uint16_t) height;
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+		texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+		texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+		return texture;
+	} else {
+		std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
+		stbi_image_free(data);
+		return nullptr;
+	}
+}
+
+Texture* LoadCubemap (const std::string filename) {
+	std::cout << "LoadCubemap (const std::string filename) not implemented\n";
+	return nullptr;
 }
 
 }
