@@ -38,7 +38,7 @@ Texture* LoadTexture (const std::string filename) {
 	}
 
 	// If texture wasn't loaded, load it
-	std::string filepath = "resources/textures/" + filename;
+	std::string filepath = "data/textures/" + filename;
 	// stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	uint8_t* data = stbi_load(filepath.c_str(), &width, &height, &numChannels, 0);
@@ -93,7 +93,7 @@ Texture* LoadPanorama (const std::string filename) {
 	}
 
 	// If texture wasn't loaded, load it
-	std::string filepath = "resources/textures/" + filename;
+	std::string filepath = "data/textures/" + filename;
 	stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	float* data = stbi_loadf(filepath.c_str(), &width, &height, &numChannels, 0);

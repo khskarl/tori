@@ -8,7 +8,7 @@
 *.obj
 
 # Unfilter .obj files in meshes folders
-# !resources/models/*.obj
+# !data/*.obj
 
 # Precompiled Headers
 *.gch

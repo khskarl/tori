@@ -15,7 +15,7 @@ bool Shader::CompileFromFile (std::string filename, Type type) {
 	m_filename = filename;
 	m_type = type;
 
-	std::string filepath = "resources/shaders/" + filename;
+	std::string filepath = "data/shaders/" + filename;
 	std::ifstream file;
 	file.open(filepath);
 	if (!file.is_open()) {
