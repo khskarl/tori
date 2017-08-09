@@ -20,7 +20,7 @@ void Renderer::Setup () {
 	// Load and setup Programs
 	m_mainProgram = new Program("pbr.vs", "pbr.fs");
 	m_screenProgram = new Program("passthrough.vs", "passthrough.fs");
-	m_screenProgram->SetUniform("screenTexture", 0);
+	m_screenProgram->SetUniform1ui("screenTexture", 0);
 	m_skyboxProgram = new Program("skybox.vs", "skybox.fs");
 
 	// Load and setup Meshes and Textures
@@ -92,20 +92,20 @@ void Renderer::RenderFrame () {
 	m_mainProgram->SetUniform("view",       p_activeCamera->GetViewMatrix());
 	m_mainProgram->SetUniform("projection", p_activeCamera->GetProjectionMatrix());
 	m_mainProgram->SetUniform("cameraPos",  p_activeCamera->GetPosition());
-	m_mainProgram->SetUniform("texAlbedo",    0);
-	m_mainProgram->SetUniform("texNormal",    1);
-	m_mainProgram->SetUniform("texRoughness", 2);
-	m_mainProgram->SetUniform("texMetalness", 3);
-	m_mainProgram->SetUniform("texOcclusion", 4);
+	m_mainProgram->SetUniform1i("texAlbedo",    0);
+	m_mainProgram->SetUniform1i("texNormal",    1);
+	m_mainProgram->SetUniform1i("texRoughness", 2);
+	m_mainProgram->SetUniform1i("texMetalness", 3);
+	m_mainProgram->SetUniform1i("texOcclusion", 4);
 
-	m_mainProgram->SetUniform("gNumLights", m_lightSources.size());
+	m_mainProgram->SetUniform1i("gNumLights", (int) m_lightSources.size());
 	for (size_t i = 0; i < m_lightSources.size(); i++) {
 		LightSource* light = &m_lightSources[i];
 		std::string lightsStr = "gLights[" + std::to_string(i) + "]";
 		m_mainProgram->SetUniform(lightsStr + ".position",  light->position);
 		m_mainProgram->SetUniform(lightsStr + ".direction", light->direction);
 		m_mainProgram->SetUniform(lightsStr + ".color",     light->color);
-		m_mainProgram->SetUniform(lightsStr + ".type",      light->type);
+		m_mainProgram->SetUniform1i(lightsStr + ".type",   light->type);
 	}
 
 	for (GameObject* const object : m_renderQueue) {
@@ -134,7 +134,7 @@ void Renderer::RenderFrame () {
 	m_skyboxProgram->Use();
 	m_skyboxProgram->SetUniform("view",  glm::mat4(glm::mat3(p_activeCamera->GetViewMatrix())));
 	m_skyboxProgram->SetUniform("projection",  p_activeCamera->GetProjectionMatrix());
-	m_skyboxProgram->SetUniform("skyboxTexture", 0);
+	m_skyboxProgram->SetUniform1ui("skyboxTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture->m_id);
 	m_skyboxMesh->Render();
@@ -147,6 +147,7 @@ void Renderer::RenderFrame () {
 	glDisable(GL_DEPTH_TEST);
 	//
 	m_screenProgram->Use();
+	m_screenProgram->SetUniform1f("exposureLevel", m_exposureLevel);
 	glBindVertexArray(m_quadVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_mainFramebuffer.GetColorTextureHandle());
@@ -157,7 +158,8 @@ void Renderer::RenderFrame () {
 
 void Renderer::SetupSkybox (std::string texture_name) {
 	m_skyboxMesh = Data::LoadMesh("cube.obj");
-	Program* conversionProgram = new Program("equirectangular_to_cube.vs", "equirectangular_to_cube.fs");
+	Program* conversionProgram = new Program("equirectangular_to_cube.vs",
+	                                         "equirectangular_to_cube.fs");
 	Texture* equirectangularTex = Data::LoadPanorama(texture_name);
 
 	uint32_t captureFBO, captureRBO;
@@ -213,7 +215,7 @@ void Renderer::SetupSkybox (std::string texture_name) {
 	glDepthMask(GL_FALSE);
 	conversionProgram->Use();
 	conversionProgram->SetUniform("projection", captureProjection);
-	conversionProgram->SetUniform("equirectangularMap", 0);
+	conversionProgram->SetUniform1ui("equirectangularMap", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, equirectangularTex->m_id);
 

@@ -38,7 +38,10 @@ public:
 	void Use ();
 	void SetUniform (std::string uniformName, glm::vec3 value);
 	void SetUniform (std::string uniformName, glm::mat4x4 value);
-	void SetUniform (std::string uniformName, uint32_t value);
+	void SetUniform1i  (std::string uniformName, int32_t value);
+	void SetUniform1ui (std::string uniformName, uint32_t value);
+	void SetUniform1f  (std::string uniformName, float    value);
+
 private:
 	GLint m_id = 0;
 

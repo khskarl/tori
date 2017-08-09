@@ -23,6 +23,8 @@ public:
 	Framebuffer m_mainFramebuffer;
 	Program* m_screenProgram;
 
+	float m_exposureLevel = 0.5f;
+
 	void SetupSkybox (std::string texture_name);
 
 public:

@@ -141,9 +141,19 @@ void Program::SetUniform(std::string uniformName, glm::mat4x4 value) {
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Program::SetUniform(std::string uniformName, uint32_t value) {
+void Program::SetUniform1i(std::string uniformName, int32_t value) {
 	GLint uniformLocation = GetUniformLocation(uniformName);
 	glUniform1i(uniformLocation, value);
+}
+
+void Program::SetUniform1ui(std::string uniformName, uint32_t value) {
+	GLint uniformLocation = GetUniformLocation(uniformName);
+	glUniform1ui(uniformLocation, value);
+}
+
+void Program::SetUniform1f(std::string uniformName, float value) {
+	GLint uniformLocation = GetUniformLocation(uniformName);
+	glUniform1f(uniformLocation, value);
 }
 
 GLint Program::GetUniformLocation(std::string uniformName) {

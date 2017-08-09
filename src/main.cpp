@@ -84,6 +84,7 @@ int main(int argc, char * argv[]) {
 			ImGui::Image((void*)renderer.m_mainFramebuffer.GetColorTextureHandle(),
 			             ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::Image((void*)renderer.m_skyboxTexture->m_id, ImVec2(128, 128));
+			ImGui::SliderFloat("Exposure", &renderer.m_exposureLevel, 0.1f, 1.0f);
 		}
 
 		if (Context::IsKeyDown(GLFW_KEY_W))	mCamera.MoveForward( 10 * dt);
