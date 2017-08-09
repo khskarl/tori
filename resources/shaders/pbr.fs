@@ -96,16 +96,17 @@ void main()
 		vec3 F0 = mix(vec3(0.04), albedo.rgb, metalness);
 
 		float D = DistributionGGX(N, H, roughness);
-		vec3  F = FresnelSchlick(N, V, F0);
+		vec3  F = FresnelSchlick(H, V, F0);
 		float G = GeometrySmith(N, V, L, roughness);
 
 		float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-		vec3 specular = (D * F * G) / (denominator + 0.0001);
+		vec3 specular = (D * F * G) / (denominator + 0.001);
 
 		vec3 kD = vec3(1.0) - F;
+		kD *= 1.0 - metalness;
 
 		float NdotL = max(dot(N, L), 0.0);
-		reflectance += (kD * albedo / PI + specular) * vec3(2.0) * radiance * NdotL;
+		reflectance += (kD * albedo / PI + specular) * radiance * NdotL;
 	}
 
 

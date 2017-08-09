@@ -136,8 +136,8 @@ void Renderer::RenderFrame () {
 	m_skyboxProgram->SetUniform("projection",  p_activeCamera->GetProjectionMatrix());
 	m_skyboxProgram->SetUniform("skyboxTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_skyboxTexture->m_id);
-
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture->m_id);
+	m_skyboxMesh->Render();
 	glDepthMask(GL_TRUE);
 	glFrontFace(GL_CCW);
 
@@ -231,6 +231,7 @@ void Renderer::SetupSkybox (std::string texture_name) {
 
 	m_skyboxTexture = new Texture();
 	m_skyboxTexture->m_filename = texture_name;
+	m_skyboxTexture->m_type     = Texture::Type::Cubemap;
 	m_skyboxTexture->m_id       = cubemap;
 	m_skyboxTexture->m_width    = 512;
 	m_skyboxTexture->m_height   = 512;

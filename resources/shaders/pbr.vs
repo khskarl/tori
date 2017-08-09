@@ -28,5 +28,6 @@ void main()
 	vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
 	vec3 B = normalize(vec3(model * vec4(aBinormal, 0.0)));
 	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+
 	vTBN = (mat3(T, B, N));
 }

@@ -147,6 +147,7 @@ void Mesh::CalculateTangentsAndBinormals () {
 	}
 
 	for (size_t i = 0; i < m_vertices.tangents.size(); i++) {
+		m_vertices.normals  [i] = glm::normalize(m_vertices.normals  [i]);
 		m_vertices.tangents [i] = glm::normalize(m_vertices.tangents [i]);
 		m_vertices.binormals[i] = glm::normalize(m_vertices.binormals[i]);
 	}
