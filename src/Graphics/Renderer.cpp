@@ -27,7 +27,7 @@ void Renderer::Setup () {
 	Data::LoadAllMeshes();
 	Data::LoadAllTextures();
 
-	SetupSkybox("newport_loft_env.hdr");
+	SetupSkybox("envmaps/loft.hdr");
 
 	// Setup lights here because lazy
 	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
@@ -39,6 +39,7 @@ void Renderer::Setup () {
 	m_lightSources[1].position = glm::vec3(-3,  0,  0);
 	m_lightSources[2].position = glm::vec3( 2, -2, 10);
 	m_lightSources[3].position = glm::vec3( 2,  -5,  5);
+	m_lightSources[0].color    = glm::vec3(10.f, 10.f, 10.f);
 	m_lightSources[1].color    = glm::vec3(20.f, 20.f, 50.f);
 	m_lightSources[2].color    = glm::vec3(20.f, 40.f, 40.f);
 	m_lightSources[3].color    = glm::vec3(50.f, 10.f, 10.f);
