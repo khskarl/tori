@@ -46,7 +46,7 @@ glm::vec3 const& Camera::GetUp () {
 }
 
 glm::vec3 const Camera::GetRight () {
-	return glm::cross(mDirection, mUp);
+	return glm::normalize(glm::cross(mDirection, mUp));
 }
 
 void Camera::MoveForward (const float amount) {
@@ -60,9 +60,9 @@ void Camera::MoveRight (const float amount) {
 
 void Camera::RotatePitch (const float amount) {
 	glm::vec3 right = GetRight();
-	mDirection = glm::rotate(mDirection, amount, right);
+	mDirection = glm::normalize(glm::rotate(mDirection, amount, right));
 }
 
 void Camera::RotateYaw (const float amount) {
-	mDirection = glm::rotate(mDirection, amount, mUp);
+	mDirection = glm::normalize(glm::rotate(mDirection, amount, mUp));
 }
