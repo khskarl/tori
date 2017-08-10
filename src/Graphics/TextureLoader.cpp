@@ -1,5 +1,6 @@
 #include "TextureLoader.hpp"
 
+#include <imgui/imgui.h>
 #include <GL/glew.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -77,6 +78,7 @@ Texture* LoadTexture (const std::string filename) {
 		texture->m_id       = (uint16_t) textureID;
 		texture->m_width    = (uint16_t) width;
 		texture->m_height   = (uint16_t) height;
+		m_textures.push_back(texture);
 		return texture;
 	}	else {
 		std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
@@ -121,6 +123,7 @@ Texture* LoadPanorama (const std::string filename) {
 		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
 		texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+		m_textures.push_back(texture);
 		return texture;
 	} else {
 		std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
@@ -132,6 +135,21 @@ Texture* LoadPanorama (const std::string filename) {
 Texture* LoadCubemap (const std::string filename) {
 	std::cout << "LoadCubemap (const std::string filename) not implemented\n";
 	return nullptr;
+}
+
+void TextureWindow () {
+	ImGui::Begin("Textures");
+	ImGui::Text("Textures :D");
+
+	for (const auto& texture : m_textures) {
+		ImGui::Text(texture->m_filename.c_str());
+		ImGui::Image((void*)texture->m_id, ImVec2(128, 128));
+	}
+
+	ImGui::Text("Textures D:");
+
+
+	ImGui::End();
 }
 
 }

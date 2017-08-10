@@ -16,6 +16,7 @@
 #include "Graphics/Program.hpp"
 #include "Graphics/Mesh.hpp"
 #include "Graphics/Camera.hpp"
+#include "Graphics/TextureLoader.hpp"
 
 #include "GameObject.hpp"
 
@@ -80,12 +81,12 @@ int main(int argc, char * argv[]) {
 			            1000.0f / ImGui::GetIO().Framerate,
 			            ImGui::GetIO().Framerate);
 			ImGui::Text(ImGui::IsMouseHoveringAnyWindow() ? "Yes" : "No");
-			ImGui::Image((void*)sphere->m_model.m_albedo->m_id, ImVec2(128, 128));
-			ImGui::Image((void*)renderer.m_mainFramebuffer.GetColorTextureHandle(),
-			             ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::Image((void*)renderer.m_skyboxTexture->m_id, ImVec2(128, 128));
+			// ImGui::Image((void*)renderer.m_mainFramebuffer.GetColorTextureHandle(),
+			//              ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::SliderFloat("Exposure", &renderer.m_exposureLevel, 0.1f, 1.0f);
 		}
+		Data::TextureWindow();
+
 
 		if (Context::IsKeyDown(GLFW_KEY_W))	mCamera.MoveForward( 10 * dt);
 		if (Context::IsKeyDown(GLFW_KEY_A))	mCamera.MoveRight  (-10 * dt);
