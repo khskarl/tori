@@ -33,8 +33,8 @@ static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 	if (state == GLFW_PRESS && !ImGui::IsMouseHoveringAnyWindow()) {
 		float dx = xpos - mLastCursorPosition.x;
 		float dy = ypos - mLastCursorPosition.y;
-		mCamera.RotatePitch(-dy * 0.2f * dt);
-		mCamera.RotateYaw  (-dx * 0.2f * dt);
+		mCamera.RotatePitch(-dy * 10.f * dt);
+		mCamera.RotateYaw  ( dx * 10.f * dt);
 		glfwSetCursorPos(window, mWindowSize.x / 2, mWindowSize.y / 2);
 	}
 	glfwGetCursorPos(window, &xpos, &ypos);
