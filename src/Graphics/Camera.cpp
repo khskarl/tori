@@ -51,12 +51,20 @@ float const Camera::GetAspectRatio () {
 	return m_width / m_height;
 }
 
+float const Camera::GetAspectRatio () {
+	return m_width / m_height;
+}
+
 void Camera::MoveForward (const float amount) {
 	m_position += m_direction * amount;
 }
 
 void Camera::MoveRight (const float amount) {
+<<<<<<< HEAD
 	m_position += GetRight() * amount;
+=======
+	mPosition += GetRight() * amount;
+>>>>>>> 78d87a8adaf8020b7d25b98b6ba51d85bb0d89fc
 }
 
 void Camera::RotatePitch (const float amount) {
@@ -76,8 +84,14 @@ void Camera::RotateYaw (const float amount) {
 void Camera::RecomputeDirection () {
 	float pitch = glm::radians(m_pitch);
 	float yaw   = glm::radians(m_yaw);
+<<<<<<< HEAD
 	m_direction = (glm::vec3(glm::cos(pitch) * glm::cos(yaw),
 	                         glm::sin(pitch),
 	                         glm::cos(pitch) * glm::sin(yaw)));
 	m_direction = glm::normalize(m_direction);
+=======
+	mDirection = (glm::vec3(glm::cos(pitch) * glm::cos(yaw),
+	                        glm::sin(pitch),
+	                        glm::cos(pitch) * glm::sin(yaw)));
+>>>>>>> 78d87a8adaf8020b7d25b98b6ba51d85bb0d89fc
 }
