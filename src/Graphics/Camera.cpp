@@ -79,5 +79,5 @@ void Camera::RecomputeDirection () {
 	m_direction = (glm::vec3(glm::cos(pitch) * glm::cos(yaw),
 	                         glm::sin(pitch),
 	                         glm::cos(pitch) * glm::sin(yaw)));
-	m_direction = glm::normalize(m_direction);
+	m_direction = glm::normalize(m_direction);\
 }
