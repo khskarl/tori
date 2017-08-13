@@ -29,13 +29,13 @@ void Renderer::Setup () {
 	m_cubemap = new Cubemap("envmaps/loft.hdr", "envmaps/loft_irradiance.hdr");
 
 	// Setup lights here because lazy
-	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
-	m_lightSources[0].direction = glm::normalize(glm::vec3(0.3f, -1.f, 0.5f));
-	m_lightSources[0].color    = glm::vec3(10.f, 10.f, 10.f);
-	m_lightSources.push_back(LightSource(LightSource::Type::Point));
-	m_lightSources[1].position = glm::vec3( 2,  -5,  5);
-	m_lightSources[1].color    = glm::vec3(50.f, 10.f, 10.f);
-
+	// m_lightSources.push_back(LightSource(LightSource::Type::Directional));
+	// m_lightSources[0].direction = glm::normalize(glm::vec3(0.3f, -1.f, 0.5f));
+	// m_lightSources[0].color    = glm::vec3(10.f, 10.f, 10.f);
+	// m_lightSources.push_back(LightSource(LightSource::Type::Point));
+	// m_lightSources[1].position = glm::vec3( 2,  -5,  5);
+	// m_lightSources[1].color    = glm::vec3(50.f, 10.f, 10.f);
+	//
 
 	// Setup main framebuffer
 	float quadVertices[] = {
@@ -103,7 +103,7 @@ void Renderer::RenderFrame () {
 		m_mainProgram->SetUniform1i(lightsStr + ".type",   light->type);
 	}
 
-	m_cubemap->BindIrradiance(5); 
+	m_cubemap->BindIrradiance(5);
 
 	for (GameObject* const object : m_renderQueue) {
 		Model* const model = &object->m_model;
