@@ -20,8 +20,8 @@ public:
 	Cubemap (std::string texture_name);
 	~Cubemap ();
 
-	void Bind (uint32_t bind_position);
-	void Render (Camera* camera);
+	void Bind (const uint32_t bind_position);
+	void Render (Camera* const camera);
 };
 
 #endif

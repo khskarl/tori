@@ -107,16 +107,12 @@ void Renderer::RenderFrame () {
 
 	for (GameObject* const object : m_renderQueue) {
 		Model* const model = &object->m_model;
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model->m_albedo->m_id);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, model->m_normal->m_id);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, model->m_roughness->m_id);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, model->m_metalness->m_id);
-		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, model->m_ao->m_id);
+
+		model->m_albedo   ->Bind(0);
+		model->m_normal   ->Bind(1);
+		model->m_roughness->Bind(2);
+		model->m_metalness->Bind(3);
+		model->m_ao       ->Bind(4);
 
 		glm::mat4 modelMatrix;
 		modelMatrix = glm::translate(modelMatrix, object->m_position);

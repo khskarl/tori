@@ -10,11 +10,11 @@ Cubemap::Cubemap (std::string texture_name) {
 	SetupEquirectangular(texture_name);
 }
 
-void Cubemap::Bind (uint32_t bind_position) {
+void Cubemap::Bind (const uint32_t bind_position) {
 	m_texture->Bind(bind_position);
 }
 
-void Cubemap::Render (Camera* camera) {
+void Cubemap::Render (Camera* const camera) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glFrontFace(GL_CW);
 	glDepthMask(GL_FALSE);
@@ -22,8 +22,7 @@ void Cubemap::Render (Camera* camera) {
 	m_program->SetUniform("view",  glm::mat4(glm::mat3(camera->GetViewMatrix())));
 	m_program->SetUniform("projection", camera->GetProjectionMatrix());
 	m_program->SetUniform1ui("skyboxTexture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_texture->m_id);
+	m_texture->Bind(0);
 	m_mesh->Render();
 	glDepthMask(GL_TRUE);
 	glFrontFace(GL_CCW);
@@ -59,8 +58,7 @@ void Cubemap::SetupEquirectangular (std::string texture_name) {
 
 	// Render skybox
 	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	glm::mat4 captureViews[] =
-	{
+	glm::mat4 captureViews[] = {
 		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
 		            glm::vec3( 1.0f, 0.0f, 0.0f),
 		            glm::vec3( 0.0f,-1.0f, 0.0f)),
