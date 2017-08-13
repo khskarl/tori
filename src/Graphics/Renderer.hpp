@@ -47,6 +47,9 @@ public:
 
 	void SetActiveCamera (Camera* const camera);
 
+	// GUI Functions
+	void RendererWindow (bool* p_open);
+
 };
 
 #endif

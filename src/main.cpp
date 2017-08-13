@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <imgui/imgui.h>
 
 // Standard Headers
 #include <cstdio>
@@ -11,6 +10,7 @@
 #include <iostream>
 
 // Local Headers
+#include <ImGui.hpp>
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Context.hpp"
 #include "Graphics/Program.hpp"
@@ -39,6 +39,10 @@ static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 	}
 	glfwGetCursorPos(window, &xpos, &ypos);
 	mLastCursorPosition = { xpos, ypos };
+}
+
+void HandleGui () {
+
 }
 
 int main(int argc, char * argv[]) {
@@ -75,18 +79,33 @@ int main(int argc, char * argv[]) {
 		Context::PollEvents();
 
 		{
-			if (ImGui::Button("Reload shaders")) renderer.m_mainProgram->Reload();
-			ImGui::Checkbox("Wireframe", &renderer.m_bRenderWireframe);
-			ImGui::Text("%.3f ms/frame (%.1f FPS)",
-			            1000.0f / ImGui::GetIO().Framerate,
-			            ImGui::GetIO().Framerate);
-			ImGui::Text(ImGui::IsMouseHoveringAnyWindow() ? "Yes" : "No");
-			// ImGui::Image((void*)renderer.m_mainFramebuffer.GetColorTextureHandle(),
-			//              ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::SliderFloat("Exposure", &renderer.m_exposureLevel, 0.1f, 5.0f);
-		}
-		Data::TextureWindow();
+			static bool show_renderer_window = true;
+			static bool show_texture_window  = true;
+			if (ImGui::BeginMainMenuBar())
+			{
+				if (ImGui::BeginMenu("Renderer"))
+				{
+					ImGui::MenuItem("Settings", NULL, &show_renderer_window);
+					ImGui::EndMenu();
+				}
 
+				if (ImGui::BeginMenu("Data"))
+				{
+					ImGui::MenuItem("Textures", NULL, &show_texture_window);
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMainMenuBar();
+			}
+
+			if (show_renderer_window) {
+				renderer.RendererWindow(&show_renderer_window);
+			}
+
+			if (show_texture_window) {
+				Data::TexturesWindow(&show_texture_window);
+			}
+		}
 
 		if (Context::IsKeyDown(GLFW_KEY_W))	mCamera.MoveForward( 10 * dt);
 		if (Context::IsKeyDown(GLFW_KEY_A))	mCamera.MoveRight  (-10 * dt);

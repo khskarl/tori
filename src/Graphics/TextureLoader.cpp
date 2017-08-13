@@ -1,6 +1,5 @@
 #include "TextureLoader.hpp"
 
-#include <imgui/imgui.h>
 #include <GL/glew.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -8,6 +7,8 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+
+#include <ImGui.hpp>
 
 namespace Data {
 
@@ -137,19 +138,19 @@ Texture* LoadCubemap (const std::string filename) {
 	return nullptr;
 }
 
-// --------------- //
-// IMGUI Functions //
-// --------------- //
+// ------------- //
+// GUI Functions //
+// ------------- //
 bool ImHelpTexturesNamesGetter (void* data, int n, const char** out_text) {
 	const std::vector<Texture*>* v = (std::vector<Texture*>*) data;
 	*out_text = ((*v)[n])->m_filename.c_str();
 	return true;
 }
 
-void TextureWindow () {
-	// ImGui::SetNextWindowSize(ImVec2(300, 400));
+void TexturesWindow (bool* p_open) {
+	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
 
-	if (ImGui::Begin("Textures"))
+	if (ImGui::Begin("Textures", p_open))
 	{
 		static int selected_item_index = 0;
 		ImGui::BeginChild("texture list", ImVec2(200, 0), true);
@@ -159,12 +160,8 @@ void TextureWindow () {
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("texture view", ImVec2(-1, 0));
-			ImGui::Text("Filename: %s", m_textures[selected_item_index]->m_filename.c_str());
-			ImGui::Separator();
-			ImGui::Image((void*)m_textures[selected_item_index]->m_id, ImVec2(128, 128));
-			ImGui::Text("Textures D:");
-		ImGui::EndChild();
+		ImGui::TextureInfo(m_textures[selected_item_index]);
+
 	}
 	ImGui::End();
 }

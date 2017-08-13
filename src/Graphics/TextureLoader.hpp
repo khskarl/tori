@@ -12,7 +12,7 @@ Texture* LoadTexture (const std::string filename);
 Texture* LoadCubemap (const std::string filename);
 Texture* LoadPanorama (const std::string filename);
 
-void TextureWindow ();
+void TexturesWindow (bool* p_open);
 
 }
 
