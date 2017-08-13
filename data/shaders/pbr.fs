@@ -53,26 +53,32 @@ float GeometrySmith (vec3 N, vec3 V, vec3 L, float roughness) {
 	       GeometrySchlickGGX(NdotL, k);
 }
 
-vec3 FresnelSchlick (vec3 N, vec3 V, vec3 F0) {
-	return F0 + (1 - F0) * pow(1 - max(0.0, dot(N, V)), 5);
+vec3 FresnelSchlick (float cosTheta, vec3 F0) {
+	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+vec3 FresnelSchlickRoughness (float cosTheta, vec3 F0, float roughness) {
+	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
 void main()
 {
 
-	vec3  albedo    = texture(texAlbedo,    vTexCoord).rgb;
-	albedo = pow(albedo, vec3(2.2));
+	vec3  albedo    = pow(texture(texAlbedo,    vTexCoord).rgb, vec3(2.2));
 	vec3  normal    = texture(texNormal,    vTexCoord).rgb;
 	normal = normalize(normal * 2.0 - 1.0);
 	normal = mix(vec3(0, 0, 1), normal, 1.0);
 	normal = normalize(vTBN * normal);
-
 	float roughness = texture(texRoughness, vTexCoord).r;
 	float metalness = texture(texMetalness, vTexCoord).r;
+	float ao        = texture(texOcclusion, vTexCoord).r;
 
 	vec3 F0 = mix(vec3(0.04), albedo.rgb, metalness);
 	vec3 N = normal;
 	vec3 V = normalize(cameraPos - vPosW);
+
+	float NdotV = max(dot(N, V), 0.0f);
+
 	vec3 reflectance = vec3(0);
 	for(int i = 0; i < gNumLights; i++)
 	{
@@ -92,26 +98,25 @@ void main()
 
 		vec3 L = lightDirection;
 		vec3 H = normalize((L + V));
+		float HdotV = max(dot(H, V), 0.0f);
+		float NdotL = max(dot(N, L), 0.0);
 
 		float D = DistributionGGX(N, H, roughness);
-		vec3  F = FresnelSchlick(H, V, F0);
+		vec3  F = FresnelSchlick(HdotV, F0);
 		float G = GeometrySmith(N, V, L, roughness);
 
-		float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+		float denominator = 4 * NdotV * NdotL;
 		vec3 specular = (D * F * G) / (denominator + 0.001);
 
 		vec3 kD = vec3(1.0) - F;
 		kD *= 1.0 - metalness;
 
-		float NdotL = max(dot(N, L), 0.0);
 		reflectance += (kD * albedo / PI + specular) * radiance * NdotL;
 	}
 
-	float ao    = texture(texOcclusion, vTexCoord).r;
-
-	vec3 kS = FresnelSchlick(N, V, F0);
+	vec3 kS = FresnelSchlickRoughness(NdotV, F0, roughness);
 	vec3 kD = 1.0 - kS;
-	vec3 irradiance = texture(irradianceMap, N).rgb;
+	vec3 irradiance = texture(irradianceMap, N).rgb * 1.0f;
 	vec3 ambient = (kD * irradiance * albedo) * ao;
 	vec3 color = ambient + reflectance;
 

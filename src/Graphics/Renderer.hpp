@@ -24,7 +24,7 @@ public:
 	Framebuffer m_mainFramebuffer;
 	Program* m_screenProgram;
 
-	float m_exposureLevel = 0.5f;
+	float m_exposureLevel = 1.0f;
 
 	void SetupCubemap (std::string texture_name);
 

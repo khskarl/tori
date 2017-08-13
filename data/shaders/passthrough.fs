@@ -8,11 +8,14 @@ uniform sampler2D screenColorTexture;
 
 void main()
 {
-	const float gamma = 2.2;
 	vec3 hdrColor = texture(screenColorTexture, TexCoords).rgb;
+
 	// HDR Tonemapping
 	vec3 color = vec3(1.0) - exp(-hdrColor * exposureLevel);
+
 	// Gamma correction
+	const float gamma = 2.2;
 	color = pow(color, vec3(1.0 / gamma));
+
 	fragmentColor = vec4(color, 1.0f);
 }
