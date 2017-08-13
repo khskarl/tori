@@ -26,7 +26,7 @@ void Renderer::Setup () {
 	Data::LoadAllMeshes();
 	Data::LoadAllTextures();
 
-	m_cubemap = new Cubemap("envmaps/loft.hdr");
+	m_cubemap = new Cubemap("envmaps/loft.hdr", "envmaps/loft_irradiance.hdr");
 
 	// Setup lights here because lazy
 	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
@@ -103,7 +103,7 @@ void Renderer::RenderFrame () {
 		m_mainProgram->SetUniform1i(lightsStr + ".type",   light->type);
 	}
 
-	m_cubemap->Bind(5);
+	m_cubemap->BindIrradiance(5); 
 
 	for (GameObject* const object : m_renderQueue) {
 		Model* const model = &object->m_model;

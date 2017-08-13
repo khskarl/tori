@@ -5,13 +5,18 @@
 #include "TextureLoader.hpp"
 #include "MeshLoader.hpp"
 
-Cubemap::Cubemap (std::string texture_name) {
+Cubemap::Cubemap (std::string texture_name, std::string irradiance_name) {
+	m_mesh = Data::LoadMesh("cube.obj");
 	m_program = new Program("skybox.vs", "skybox.fs");
-	SetupEquirectangular(texture_name);
+	Setup(texture_name, irradiance_name);
 }
 
-void Cubemap::Bind (const uint32_t bind_position) {
-	m_texture->Bind(bind_position);
+void Cubemap::BindColor (const uint32_t bind_position) {
+	m_colorTexture->Bind(bind_position);
+}
+
+void Cubemap::BindIrradiance (const uint32_t bind_position) {
+	m_irradianceTexture->Bind(bind_position);
 }
 
 void Cubemap::Render (Camera* const camera) {
@@ -22,17 +27,15 @@ void Cubemap::Render (Camera* const camera) {
 	m_program->SetUniform("view",  glm::mat4(glm::mat3(camera->GetViewMatrix())));
 	m_program->SetUniform("projection", camera->GetProjectionMatrix());
 	m_program->SetUniform1ui("skyboxTexture", 0);
-	m_texture->Bind(0);
+	m_colorTexture->Bind(0);
 	m_mesh->Render();
 	glDepthMask(GL_TRUE);
 	glFrontFace(GL_CCW);
 }
 
-void Cubemap::SetupEquirectangular (std::string texture_name) {
-	m_mesh = Data::LoadMesh("cube.obj");
+Texture* Cubemap::ConvertToCubemap (Texture* equirectangularTex) {
 	Program* conversionProgram = new Program("equirectangular_to_cube.vs",
 	                                         "equirectangular_to_cube.fs");
-	Texture* equirectangularTex = Data::LoadPanorama(texture_name);
 
 	uint32_t captureFBO, captureRBO;
 	glGenFramebuffers(1,  &captureFBO);
@@ -46,7 +49,7 @@ void Cubemap::SetupEquirectangular (std::string texture_name) {
 	uint32_t cubemap;
 	glGenTextures(1, &cubemap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
-	for (unsigned int i = 0; i < 6; ++i) {
+	for (size_t i = 0; i < 6; ++i) {
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F,
 			512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
 	}
@@ -101,14 +104,23 @@ void Cubemap::SetupEquirectangular (std::string texture_name) {
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	m_texture = new Texture();
-	m_texture->m_filename = texture_name;
-	m_texture->m_type     = Texture::Type::Cubemap;
-	m_texture->m_id       = cubemap;
-	m_texture->m_width    = 512;
-	m_texture->m_height   = 512;
-	m_texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
-	m_texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
-	m_texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
-	m_texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+	Texture* texture = new Texture();
+	texture->m_filename = equirectangularTex->m_filename;
+	texture->m_type     = Texture::Type::Cubemap;
+	texture->m_id       = cubemap;
+	texture->m_width    = 512;
+	texture->m_height   = 512;
+	texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+	texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+	texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+	texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
+	return texture;
+}
+
+void Cubemap::Setup (std::string texture_name, std::string irradiance_name) {
+	Texture* color2D = Data::LoadPanorama(texture_name);
+	m_colorTexture = ConvertToCubemap(color2D);
+
+	Texture* irradiance2D = Data::LoadPanorama(irradiance_name);
+	m_irradianceTexture = ConvertToCubemap(irradiance2D);
 }

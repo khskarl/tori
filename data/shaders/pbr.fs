@@ -54,7 +54,7 @@ float GeometrySmith (vec3 N, vec3 V, vec3 L, float roughness) {
 }
 
 vec3 FresnelSchlick (vec3 N, vec3 V, vec3 F0) {
-	return F0 + (1 - F0) * pow(1 - dot(N, V), 5);
+	return F0 + (1 - F0) * pow(1 - max(0.0, dot(N, V)), 5);
 }
 
 void main()
@@ -70,6 +70,7 @@ void main()
 	float roughness = texture(texRoughness, vTexCoord).r;
 	float metalness = texture(texMetalness, vTexCoord).r;
 
+	vec3 F0 = mix(vec3(0.04), albedo.rgb, metalness);
 	vec3 N = normal;
 	vec3 V = normalize(cameraPos - vPosW);
 	vec3 reflectance = vec3(0);
@@ -91,7 +92,6 @@ void main()
 
 		vec3 L = lightDirection;
 		vec3 H = normalize((L + V));
-		vec3 F0 = mix(vec3(0.04), albedo.rgb, metalness);
 
 		float D = DistributionGGX(N, H, roughness);
 		vec3  F = FresnelSchlick(H, V, F0);
@@ -107,9 +107,12 @@ void main()
 		reflectance += (kD * albedo / PI + specular) * radiance * NdotL;
 	}
 
-
 	float ao    = texture(texOcclusion, vTexCoord).r;
-	vec3 ambient = texture(irradianceMap, N).rgb * ao;
+
+	vec3 kS = FresnelSchlick(N, V, F0);
+	vec3 kD = 1.0 - kS;
+	vec3 irradiance = texture(irradianceMap, N).rgb;
+	vec3 ambient = (kD * irradiance * albedo) * ao;
 	vec3 color = ambient + reflectance;
 
 	fragmentColor = vec4(color, 1.0);

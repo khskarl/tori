@@ -49,6 +49,7 @@ project "tori"
     targetdir (DEBUG_DIR)
     debugdir  (DEBUG_DIR)
     defines   "DEBUG"
+    flags     "Symbols"
 
   configuration { "Release" }
     targetdir (RELEASE_DIR)
