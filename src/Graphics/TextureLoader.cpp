@@ -133,22 +133,39 @@ Texture* LoadPanorama (const std::string filename) {
 }
 
 Texture* LoadCubemap (const std::string filename) {
-	std::cout << "LoadCubemap (const std::string filename) not implemented\n";
+	std::cerr << "LoadCubemap (const std::string filename) not implemented\n";
 	return nullptr;
 }
 
+// --------------- //
+// IMGUI Functions //
+// --------------- //
+bool ImHelpTexturesNamesGetter (void* data, int n, const char** out_text) {
+	const std::vector<Texture*>* v = (std::vector<Texture*>*) data;
+	*out_text = ((*v)[n])->m_filename.c_str();
+	return true;
+}
+
 void TextureWindow () {
-	ImGui::Begin("Textures");
-	ImGui::Text("Textures :D");
+	// ImGui::SetNextWindowSize(ImVec2(300, 400));
 
-	for (const auto& texture : m_textures) {
-		ImGui::Text(texture->m_filename.c_str());
-		ImGui::Image((void*)texture->m_id, ImVec2(128, 128));
+	if (ImGui::Begin("Textures"))
+	{
+		static int selected_item_index = 0;
+		ImGui::BeginChild("texture list", ImVec2(200, 0), true);
+			ImGui::PushItemWidth(-1);
+			ImGui::ListBox("", &selected_item_index, ImHelpTexturesNamesGetter, &m_textures, m_textures.size(), m_textures.size());
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("texture view", ImVec2(-1, 0));
+			ImGui::Text("Filename: %s", m_textures[selected_item_index]->m_filename.c_str());
+			ImGui::Separator();
+			ImGui::Image((void*)m_textures[selected_item_index]->m_id, ImVec2(128, 128));
+			ImGui::Text("Textures D:");
+		ImGui::EndChild();
 	}
-
-	ImGui::Text("Textures D:");
-
-
 	ImGui::End();
 }
 

@@ -35,7 +35,6 @@ void Renderer::Setup () {
 	// m_lightSources.push_back(LightSource(LightSource::Type::Point));
 	// m_lightSources[1].position = glm::vec3( 2,  -5,  5);
 	// m_lightSources[1].color    = glm::vec3(50.f, 10.f, 10.f);
-	//
 
 	// Setup main framebuffer
 	float quadVertices[] = {

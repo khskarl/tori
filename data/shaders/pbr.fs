@@ -84,12 +84,10 @@ void main()
 	{
 		vec3 lightDirection;
 		float attenuation = 1.0;
-		if (gLights[i].type == DIRECTIONAL)
-		{
+		if (gLights[i].type == DIRECTIONAL) {
 			lightDirection = -normalize(gLights[i].direction);
 		}
-		else if (gLights[i].type == POINT)
-		{
+		else if (gLights[i].type == POINT) {
 			lightDirection = normalize(gLights[i].position - vPosW);
 			float d = length(gLights[i].position - vPosW);
 			attenuation = 1.0 / (d * d);
