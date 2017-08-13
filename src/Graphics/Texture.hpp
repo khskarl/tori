@@ -38,7 +38,9 @@ public:
 		DepthComponent = GL_DEPTH_COMPONENT,
 		StencilIndex   = GL_STENCIL_INDEX
 	};
+	void Bind (uint32_t bind_position);
 
+// private:
 	uint16_t m_id = 0;
 	uint16_t m_width  = 0;
 	uint16_t m_height = 0;
@@ -54,6 +56,7 @@ public:
 
 	Texture();
 	~Texture ();
+
 };
 
 #endif // TEXTURE_HPP

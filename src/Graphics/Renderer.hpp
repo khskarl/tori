@@ -7,6 +7,7 @@
 #include "Mesh.hpp"
 #include "Texture.hpp"
 #include "LightSource.hpp"
+#include "Cubemap.hpp"
 #include "../GameObject.hpp"
 
 #include <cstdint>
@@ -25,7 +26,7 @@ public:
 
 	float m_exposureLevel = 0.5f;
 
-	void SetupSkybox (std::string texture_name);
+	void SetupCubemap (std::string texture_name);
 
 public:
 	bool m_bRenderWireframe = false;
@@ -34,11 +35,7 @@ public:
 	Camera* p_activeCamera = nullptr;
 
 	// Skybox related variables
-	Model* m_skyboxModel = nullptr;
-	Mesh*    m_skyboxMesh = nullptr;
-	Texture* m_skyboxTexture = nullptr;
-	Program* m_skyboxProgram = nullptr;
-
+	Cubemap* m_cubemap = nullptr;
 
 	Renderer ();
 	~Renderer ();

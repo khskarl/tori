@@ -21,28 +21,21 @@ void Renderer::Setup () {
 	m_mainProgram = new Program("pbr.vs", "pbr.fs");
 	m_screenProgram = new Program("passthrough.vs", "passthrough.fs");
 	m_screenProgram->SetUniform1ui("screenTexture", 0);
-	m_skyboxProgram = new Program("skybox.vs", "skybox.fs");
 
 	// Load and setup Meshes and Textures
 	Data::LoadAllMeshes();
 	Data::LoadAllTextures();
 
-	SetupSkybox("envmaps/loft.hdr");
+	m_cubemap = new Cubemap("envmaps/loft.hdr");
 
 	// Setup lights here because lazy
 	m_lightSources.push_back(LightSource(LightSource::Type::Directional));
-	m_lightSources.push_back(LightSource(LightSource::Type::Point));
-	m_lightSources.push_back(LightSource(LightSource::Type::Point));
-	m_lightSources.push_back(LightSource(LightSource::Type::Point));
-
 	m_lightSources[0].direction = glm::normalize(glm::vec3(0.3f, -1.f, 0.5f));
-	m_lightSources[1].position = glm::vec3(-3,  0,  0);
-	m_lightSources[2].position = glm::vec3( 2, -2, 10);
-	m_lightSources[3].position = glm::vec3( 2,  -5,  5);
 	m_lightSources[0].color    = glm::vec3(10.f, 10.f, 10.f);
-	m_lightSources[1].color    = glm::vec3(20.f, 20.f, 50.f);
-	m_lightSources[2].color    = glm::vec3(20.f, 40.f, 40.f);
-	m_lightSources[3].color    = glm::vec3(50.f, 10.f, 10.f);
+	m_lightSources.push_back(LightSource(LightSource::Type::Point));
+	m_lightSources[1].position = glm::vec3( 2,  -5,  5);
+	m_lightSources[1].color    = glm::vec3(50.f, 10.f, 10.f);
+
 
 	// Setup main framebuffer
 	float quadVertices[] = {
@@ -98,6 +91,7 @@ void Renderer::RenderFrame () {
 	m_mainProgram->SetUniform1i("texRoughness", 2);
 	m_mainProgram->SetUniform1i("texMetalness", 3);
 	m_mainProgram->SetUniform1i("texOcclusion", 4);
+	m_mainProgram->SetUniform1i("irradianceMap", 5);
 
 	m_mainProgram->SetUniform1i("gNumLights", (int) m_lightSources.size());
 	for (size_t i = 0; i < m_lightSources.size(); i++) {
@@ -108,6 +102,8 @@ void Renderer::RenderFrame () {
 		m_mainProgram->SetUniform(lightsStr + ".color",     light->color);
 		m_mainProgram->SetUniform1i(lightsStr + ".type",   light->type);
 	}
+
+	m_cubemap->Bind(5);
 
 	for (GameObject* const object : m_renderQueue) {
 		Model* const model = &object->m_model;
@@ -129,18 +125,7 @@ void Renderer::RenderFrame () {
 	}
 
 	// Render skybox
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glFrontFace(GL_CW);
-	glDepthMask(GL_FALSE);
-	m_skyboxProgram->Use();
-	m_skyboxProgram->SetUniform("view",  glm::mat4(glm::mat3(p_activeCamera->GetViewMatrix())));
-	m_skyboxProgram->SetUniform("projection",  p_activeCamera->GetProjectionMatrix());
-	m_skyboxProgram->SetUniform1ui("skyboxTexture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture->m_id);
-	m_skyboxMesh->Render();
-	glDepthMask(GL_TRUE);
-	glFrontFace(GL_CCW);
+	m_cubemap->Render(p_activeCamera);
 
 	// Draw main framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -155,93 +140,6 @@ void Renderer::RenderFrame () {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	ImGui::Render();
-}
-
-void Renderer::SetupSkybox (std::string texture_name) {
-	m_skyboxMesh = Data::LoadMesh("cube.obj");
-	Program* conversionProgram = new Program("equirectangular_to_cube.vs",
-	                                         "equirectangular_to_cube.fs");
-	Texture* equirectangularTex = Data::LoadPanorama(texture_name);
-
-	uint32_t captureFBO, captureRBO;
-	glGenFramebuffers(1,  &captureFBO);
-	glGenRenderbuffers(1, &captureRBO);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
-	uint32_t cubemap;
-	glGenTextures(1, &cubemap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
-	for (unsigned int i = 0; i < 6; ++i) {
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F,
-			512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Render skybox
-
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	glm::mat4 captureViews[] =
-	{
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3( 1.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f,-1.0f, 0.0f)),
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3(-1.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f,-1.0f, 0.0f)),
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f, 1.0f, 0.0f),
-		            glm::vec3( 0.0f, 0.0f, 1.0f)),
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f,-1.0f, 0.0f),
-		            glm::vec3( 0.0f, 0.0f,-1.0f)),
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f, 0.0f, 1.0f),
-		            glm::vec3( 0.0f,-1.0f, 0.0f)),
-		glm::lookAt(glm::vec3( 0.0f, 0.0f, 0.0f),
-		            glm::vec3( 0.0f, 0.0f,-1.0f),
-		            glm::vec3( 0.0f,-1.0f, 0.0f))
-	};
-
-	// convert HDR equirectangular environment map to cubemap equivalent
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glFrontFace(GL_CW);
-	glDepthMask(GL_FALSE);
-	conversionProgram->Use();
-	conversionProgram->SetUniform("projection", captureProjection);
-	conversionProgram->SetUniform1ui("equirectangularMap", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, equirectangularTex->m_id);
-
-	glViewport(0, 0, 512, 512);
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	for (size_t i = 0; i < 6; ++i) {
-		conversionProgram->SetUniform("view", captureViews[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		m_skyboxMesh->Render();
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	m_skyboxTexture = new Texture();
-	m_skyboxTexture->m_filename = texture_name;
-	m_skyboxTexture->m_type     = Texture::Type::Cubemap;
-	m_skyboxTexture->m_id       = cubemap;
-	m_skyboxTexture->m_width    = 512;
-	m_skyboxTexture->m_height   = 512;
-	m_skyboxTexture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
-	m_skyboxTexture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
-	m_skyboxTexture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
-	m_skyboxTexture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
 }
 
 void Renderer::Submit (GameObject* const object) {

@@ -26,9 +26,7 @@ uniform sampler2D texNormal;
 uniform sampler2D texRoughness;
 uniform sampler2D texMetalness;
 uniform sampler2D texOcclusion;
-
-//
-
+uniform samplerCube irradianceMap;
 
 uniform int gNumLights;
 
@@ -111,7 +109,7 @@ void main()
 
 
 	float ao    = texture(texOcclusion, vTexCoord).r;
-	vec3 ambient = vec3(0.01) * albedo * ao;
+	vec3 ambient = texture(irradianceMap, N).rgb * ao;
 	vec3 color = ambient + reflectance;
 
 	fragmentColor = vec4(color, 1.0);
