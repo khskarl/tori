@@ -1,9 +1,10 @@
 #include "Cubemap.hpp"
 
+#include <Log.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-#include "TextureLoader.hpp"
-#include "MeshLoader.hpp"
+#include <Assets/AssetsManager.hpp>
+#include <Assets/MeshLoader.hpp>
+#include <Assets/TextureLoader.hpp>
 
 Cubemap::Cubemap (std::string texture_name, std::string irradiance_name) {
 	m_mesh = Data::LoadMesh("cube.obj");
@@ -118,9 +119,9 @@ Texture* Cubemap::ConvertToCubemap (Texture* equirectangularTex) {
 }
 
 void Cubemap::Setup (std::string texture_name, std::string irradiance_name) {
-	Texture* color2D = Data::LoadPanorama(texture_name);
+	Texture* color2D = Loader::LoadPanorama(texture_name);
 	m_colorTexture = ConvertToCubemap(color2D);
 
-	Texture* irradiance2D = Data::LoadPanorama(irradiance_name);
+	Texture* irradiance2D = Loader::LoadPanorama(irradiance_name);
 	m_irradianceTexture = ConvertToCubemap(irradiance2D);
 }

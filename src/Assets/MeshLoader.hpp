@@ -4,7 +4,7 @@
 #include <vector>
 #include <Types.hpp>
 
-#include "Mesh.hpp"
+#include <Graphics/Mesh.hpp>
 
 namespace Data {
 

@@ -11,36 +11,18 @@
 
 #include <ImGui.hpp>
 
-namespace Data {
+namespace Loader {
 
-std::vector<Texture*> m_textures;
-
-Texture* GetLoadedTexture (const std::string filename) {
-	for (Texture* const texture : m_textures) {
-		if (texture->m_filename == filename) {
-			return texture;
-		}
-	}
-	return nullptr;
-}
-
-void LoadAllTextures () {
-  Data::LoadTexture ("default.png");
-	Data::LoadTexture ("woodfloor_albedo.png");
-	Data::LoadTexture ("woodfloor_roughness.png");
-	Data::LoadTexture ("woodfloor_normal.png");
-	Data::LoadTexture ("woodfloor_metalness.png");
-	Data::LoadTexture ("woodfloor_ao.png");
-}
+// void LoadAllTextures () {
+//   Data::LoadTexture ("default.png");
+// 	Data::LoadTexture ("woodfloor_albedo.png");
+// 	Data::LoadTexture ("woodfloor_roughness.png");
+// 	Data::LoadTexture ("woodfloor_normal.png");
+// 	Data::LoadTexture ("woodfloor_metalness.png");
+// 	Data::LoadTexture ("woodfloor_ao.png");
+// }
 
 Texture* LoadTexture (const std::string filename) {
-	// Check if texture is already loaded
-	Texture* loadedTexture = GetLoadedTexture(filename);
-	if (loadedTexture != nullptr) {
-		return loadedTexture;
-	}
-
-	// If texture wasn't loaded, load it
 	std::string filepath = "data/textures/" + filename;
 	LOG_INFO("Loading " + filepath);
 	// stbi_set_flip_vertically_on_load(true);
@@ -81,11 +63,8 @@ Texture* LoadTexture (const std::string filename) {
 		texture->m_id       = (uint16_t) textureID;
 		texture->m_width    = (uint16_t) width;
 		texture->m_height   = (uint16_t) height;
-		m_textures.push_back(texture);
-
 		return texture;
 	}	else {
-		// std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
 		LOG_ERROR("Failed to load texture" + filepath);
 		stbi_image_free(data);
 		return nullptr;
@@ -93,12 +72,6 @@ Texture* LoadTexture (const std::string filename) {
 }
 
 Texture* LoadPanorama (const std::string filename) {
-	// Check if texture is already loaded
-	Texture* loadedTexture = GetLoadedTexture(filename);
-	if (loadedTexture != nullptr) {
-		return loadedTexture;
-	}
-
 	// If texture wasn't loaded, load it
 	std::string filepath = "data/textures/" + filename;
 	LOG_INFO("Loading " + filepath);
@@ -109,6 +82,7 @@ Texture* LoadPanorama (const std::string filename) {
 
 	if (data) {
 		uint32_t textureID;
+
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
@@ -130,10 +104,9 @@ Texture* LoadPanorama (const std::string filename) {
 		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
 		texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
-		m_textures.push_back(texture);
+
 		return texture;
 	} else {
-		// std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
 		LOG_ERROR("Failed to load texture" + filepath);
 		stbi_image_free(data);
 		return nullptr;
@@ -150,22 +123,22 @@ bool ImHelpTexturesNamesGetter (void* data, int n, const char** out_text) {
 }
 
 void TexturesWindow (bool* p_open) {
-	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
-
-	if (ImGui::Begin("Textures", p_open))
-	{
-		static int selected_item_index = 0;
-		ImGui::BeginChild("texture list", ImVec2(200, 0), true);
-			ImGui::PushItemWidth(-1);
-			ImGui::ListBox("", &selected_item_index, ImHelpTexturesNamesGetter, &m_textures, m_textures.size(), m_textures.size());
-		ImGui::EndChild();
-
-		ImGui::SameLine();
-
-		ImGui::TextureInfo(m_textures[selected_item_index]);
-
-	}
-	ImGui::End();
+	// ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+	//
+	// if (ImGui::Begin("Textures", p_open))
+	// {
+	// 	static int selected_item_index = 0;
+	// 	ImGui::BeginChild("texture list", ImVec2(200, 0), true);
+	// 		ImGui::PushItemWidth(-1);
+	// 		ImGui::ListBox("", &selected_item_index, ImHelpTexturesNamesGetter, &m_textures, m_textures.size(), m_textures.size());
+	// 	ImGui::EndChild();
+	//
+	// 	ImGui::SameLine();
+	//
+	// 	ImGui::TextureInfo(m_textures[selected_item_index]);
+	//
+	// }
+	// ImGui::End();
 }
 
 }

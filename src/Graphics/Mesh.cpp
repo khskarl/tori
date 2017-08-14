@@ -1,6 +1,7 @@
 #include "Mesh.hpp"
 
-#include "MeshLoader.hpp"
+#include <Assets/MeshLoader.hpp>
+
 
 #include <vector>
 #include <Log.hpp>

@@ -1,7 +1,7 @@
 #include "Model.hpp"
 
-#include "MeshLoader.hpp"
-#include "TextureLoader.hpp"
+#include <Assets/MeshLoader.hpp>
+// #include <Assets/AssetsManager.hpp>
 
 Model::Model (std::string mesh_name, Material* material_name) {
 	p_mesh    = Data::LoadMesh(mesh_name);

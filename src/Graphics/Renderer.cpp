@@ -8,23 +8,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui/imgui.h>
 
-#include "TextureLoader.hpp"
-#include "MeshLoader.hpp"
-#include "../Settings.hpp"
+#include <Assets/MeshLoader.hpp>
+#include <Assets/AssetsManager.hpp>
+
+#include <Settings.hpp>
 
 Renderer::Renderer () {}
 Renderer::~Renderer () {}
 
 void Renderer::Setup () {
-
 	// Load and setup Programs
 	m_mainProgram = new Program("pbr.vs", "pbr.fs");
 	m_screenProgram = new Program("passthrough.vs", "passthrough.fs");
 	m_screenProgram->SetUniform1ui("screenTexture", 0);
-
-	// Load and setup Meshes and Textures
-	Data::LoadAllMeshes();
-	Data::LoadAllTextures();
 
 	m_cubemap = new Cubemap("envmaps/loft.hdr", "envmaps/loft_irradiance.hdr");
 

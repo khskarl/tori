@@ -11,12 +11,12 @@
 
 // Local Headers
 #include <ImGui.hpp>
+#include <Assets/AssetsManager.hpp>
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Context.hpp"
 #include "Graphics/Program.hpp"
 #include "Graphics/Mesh.hpp"
 #include "Graphics/Camera.hpp"
-#include "Graphics/TextureLoader.hpp"
 #include "Graphics/Material.hpp"
 
 #include "GameObject.hpp"
@@ -46,6 +46,8 @@ int main(int argc, char * argv[]) {
 	Context::Initialize();
 	Context::SetCursorPositionCallback(CursorPositionCallback);
 
+	// AssetsManager::Get().Setup();
+
 	Renderer renderer;
 	renderer.SetActiveCamera(&mCamera);
 	renderer.Setup();
@@ -59,7 +61,7 @@ int main(int argc, char * argv[]) {
 	sphere->m_model = Model("sphere.obj", woodfloor);
 	sphere->m_position = glm::vec3(0, 0, 5);
 	renderer.Submit(sphere);
-	
+
 	// GameObject* bamboo = new GameObject();
 	// bamboo->m_model = Model("sphere.obj",
 	//                         "rusted_albedo.png",
@@ -100,7 +102,7 @@ int main(int argc, char * argv[]) {
 			}
 
 			if (show_texture_window) {
-				Data::TexturesWindow(&show_texture_window);
+				// Data::TexturesWindow(&show_texture_window);
 			}
 		}
 

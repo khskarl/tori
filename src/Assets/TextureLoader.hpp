@@ -3,11 +3,10 @@
 
 #include <Types.hpp>
 
-#include "Texture.hpp"
+#include <Graphics/Texture.hpp>
 
-namespace Data {
+namespace Loader {
 
-void LoadAllTextures ();
 Texture* LoadTexture (const std::string filename);
 Texture* LoadPanorama (const std::string filename);
 
