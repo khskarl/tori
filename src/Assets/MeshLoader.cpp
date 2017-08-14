@@ -9,24 +9,7 @@
 
 namespace Loader {
 
-std::vector<Mesh*> m_meshes;
-
-Mesh* GetLoadedMesh (const std::string filename) {
-	for (Mesh* const mesh : m_meshes) {
-		if (mesh->m_filename == filename) {
-			return mesh;
-		}
-	}
-	return nullptr;
-}
-
 Mesh* LoadMesh (const std::string filename) {
-	// Check if mesh is already loaded
-	Mesh* loadedMesh = GetLoadedMesh(filename);
-	if (loadedMesh) {
-		return loadedMesh;
-	}
-
 	// If mesh wasn't loaded, load it
 	std::string filepath = "data/models/" + filename;
 	tinyobj::attrib_t                attrib;
@@ -107,7 +90,6 @@ Mesh* LoadMesh (const std::string filename) {
 
 	mesh->m_filename = filename;
 	mesh->Setup();
-	m_meshes.push_back(mesh);
 	return mesh;
 }
 }

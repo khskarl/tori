@@ -9,6 +9,8 @@
 
 class Material {
 public:
+	std::string m_filename = "";
+
 	Texture* p_albedo = nullptr;
 	Texture* p_normal = nullptr;
 	Texture* p_roughness = nullptr;

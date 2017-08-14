@@ -9,10 +9,12 @@
 class Model {
 private:
 public:
-	Mesh*    p_mesh     = nullptr;
+	Mesh*     p_mesh     = nullptr;
 	Material* p_material = nullptr;
 
-	Model  (std::string mesh_name, Material* material_name);
+	Model  (std::string mesh_name, std::string material_name);
+	Model  (std::string mesh_name, Material* material);
+	Model  (Mesh* mesh, Material* material);
 	Model  (std::string mesh_name);
 	~Model ();
 };

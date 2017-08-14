@@ -51,13 +51,8 @@ int main(int argc, char * argv[]) {
 	renderer.SetActiveCamera(&mCamera);
 	renderer.Setup();
 
-	Material* woodfloor = new Material("woodfloor_albedo.png",
-	                                   "woodfloor_normal.png",
-	                                   "woodfloor_roughness.png",
-	                                   "woodfloor_metalness.png",
-	                                   "woodfloor_ao.png");
 	GameObject* sphere = new GameObject();
-	sphere->m_model = Model("sphere.obj", woodfloor);
+	sphere->m_model = Model("sphere.obj", "woodfloor.mat");
 	sphere->m_position = glm::vec3(0, 0, 5);
 	renderer.Submit(sphere);
 

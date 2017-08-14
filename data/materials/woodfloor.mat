@@ -1,0 +1,6 @@
+[material]
+albedo = woodfloor_albedo.png
+normal = woodfloor_normal.png
+roughness = woodfloor_roughness.png
+metalness = woodfloor_metalness.png
+occlusion = woodfloor_ao.png
