@@ -3,11 +3,10 @@
 #include <Log.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <Assets/AssetsManager.hpp>
-#include <Assets/MeshLoader.hpp>
 #include <Assets/TextureLoader.hpp>
 
 Cubemap::Cubemap (std::string texture_name, std::string irradiance_name) {
-	m_mesh = Data::LoadMesh("cube.obj");
+	m_mesh = AssetsManager::Get().GetMesh("cube.obj");
 	m_program = new Program("skybox.vs", "skybox.fs");
 	Setup(texture_name, irradiance_name);
 }

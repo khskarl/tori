@@ -47,7 +47,6 @@ int main(int argc, char * argv[]) {
 	Context::SetCursorPositionCallback(CursorPositionCallback);
 
 	// AssetsManager::Get().Setup();
-
 	Renderer renderer;
 	renderer.SetActiveCamera(&mCamera);
 	renderer.Setup();

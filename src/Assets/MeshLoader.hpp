@@ -6,9 +6,8 @@
 
 #include <Graphics/Mesh.hpp>
 
-namespace Data {
+namespace Loader {
 
-void LoadAllMeshes ();
 Mesh* LoadMesh (const std::string filename);
 
 }

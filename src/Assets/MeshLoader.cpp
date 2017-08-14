@@ -7,7 +7,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-namespace Data {
+namespace Loader {
 
 std::vector<Mesh*> m_meshes;
 
@@ -18,11 +18,6 @@ Mesh* GetLoadedMesh (const std::string filename) {
 		}
 	}
 	return nullptr;
-}
-
-void LoadAllMeshes () {
-  Data::LoadMesh("sphere.obj");
-	Data::LoadMesh("cube.obj");
 }
 
 Mesh* LoadMesh (const std::string filename) {

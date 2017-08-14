@@ -41,7 +41,7 @@ public:
 	void Bind (uint32_t bind_position);
 
 // private:
-	uint16_t m_id = 0;
+	uint32_t m_id = 0;
 	uint16_t m_width  = 0;
 	uint16_t m_height = 0;
 

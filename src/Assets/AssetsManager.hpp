@@ -6,10 +6,12 @@
 #include <vector>
 
 class Texture;
+class Mesh;
 
 class AssetsManager {
 private:
 	std::vector<Texture*> m_textures;
+	std::vector<Mesh*> m_meshes;
 
 public:
 	static AssetsManager& Get () {
@@ -27,8 +29,10 @@ public:
 	void UnloadAllAssets ();
 
 	Texture* FindLoadedTexture (const std::string filename);
-	Texture* LoadTexture (const std::string filename);
 	Texture* GetTexture (const std::string filename);
+
+	Mesh* FindLoadedMesh (const std::string filename);
+	Mesh* GetMesh (const std::string filename);
 
 };
 

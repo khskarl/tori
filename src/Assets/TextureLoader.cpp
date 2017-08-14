@@ -13,15 +13,6 @@
 
 namespace Loader {
 
-// void LoadAllTextures () {
-//   Data::LoadTexture ("default.png");
-// 	Data::LoadTexture ("woodfloor_albedo.png");
-// 	Data::LoadTexture ("woodfloor_roughness.png");
-// 	Data::LoadTexture ("woodfloor_normal.png");
-// 	Data::LoadTexture ("woodfloor_metalness.png");
-// 	Data::LoadTexture ("woodfloor_ao.png");
-// }
-
 Texture* LoadTexture (const std::string filename) {
 	std::string filepath = "data/textures/" + filename;
 	LOG_INFO("Loading " + filepath);
@@ -60,9 +51,13 @@ Texture* LoadTexture (const std::string filename) {
 		Texture* texture = new Texture();
 		texture->m_filename = filename;
 		texture->m_type     = Texture::Type::Texture2D;
-		texture->m_id       = (uint16_t) textureID;
+		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
 		texture->m_height   = (uint16_t) height;
+		texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_REPEAT;
+		texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_REPEAT;
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		return texture;
 	}	else {
 		LOG_ERROR("Failed to load texture" + filepath);
@@ -82,7 +77,6 @@ Texture* LoadPanorama (const std::string filename) {
 
 	if (data) {
 		uint32_t textureID;
-
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
@@ -97,14 +91,13 @@ Texture* LoadPanorama (const std::string filename) {
 		Texture* texture = new Texture();
 		texture->m_filename = filename;
 		texture->m_type     = Texture::Type::Cubemap;
-		texture->m_id       = (uint16_t) textureID;
+		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
 		texture->m_height   = (uint16_t) height;
-		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
-		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		texture->m_edgeSampleModeS  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
 		texture->m_edgeSampleModeT  = (Texture::EdgeSampleMode) GL_CLAMP_TO_EDGE;
-
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
+		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		return texture;
 	} else {
 		LOG_ERROR("Failed to load texture" + filepath);
