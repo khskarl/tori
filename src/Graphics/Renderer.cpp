@@ -8,8 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui/imgui.h>
 
-#include <Assets/MeshLoader.hpp>
-#include <Assets/AssetsManager.hpp>
+#include <Assets/AssetManager.hpp>
 
 #include <Settings.hpp>
 

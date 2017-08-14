@@ -1,7 +1,7 @@
 #include "Material.hpp"
 
 
-#include <Assets/AssetsManager.hpp>
+#include <Assets/AssetManager.hpp>
 
 Material::Material (std::string _albedo,
                     std::string _normal,
@@ -9,10 +9,10 @@ Material::Material (std::string _albedo,
                     std::string _metalness,
                     std::string _occlusion)
 {
-	p_albedo =    AssetsManager::Get().GetTexture(_albedo);
-	p_normal =    AssetsManager::Get().GetTexture(_normal);
-	p_roughness = AssetsManager::Get().GetTexture(_roughness);
-	p_metalness = AssetsManager::Get().GetTexture(_metalness);
-	p_occlusion = AssetsManager::Get().GetTexture(_occlusion);
+	p_albedo =    AssetManager::Get().GetTexture(_albedo);
+	p_normal =    AssetManager::Get().GetTexture(_normal);
+	p_roughness = AssetManager::Get().GetTexture(_roughness);
+	p_metalness = AssetManager::Get().GetTexture(_metalness);
+	p_occlusion = AssetManager::Get().GetTexture(_occlusion);
 }
 Material::~Material () {}

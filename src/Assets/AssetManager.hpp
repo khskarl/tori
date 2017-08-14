@@ -8,19 +8,19 @@
 class Texture;
 class Mesh;
 
-class AssetsManager {
+class AssetManager {
 private:
 	std::vector<Texture*> m_textures;
 	std::vector<Mesh*> m_meshes;
 
 public:
-	static AssetsManager& Get () {
-		static AssetsManager instance;
+	static AssetManager& Get () {
+		static AssetManager instance;
 		return instance;
 	};
 
-	AssetsManager ();
-	~AssetsManager ();
+	AssetManager ();
+	~AssetManager ();
 
 	void Setup ();
 	void Shutdown ();

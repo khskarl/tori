@@ -11,7 +11,7 @@
 
 // Local Headers
 #include <ImGui.hpp>
-#include <Assets/AssetsManager.hpp>
+#include <Assets/AssetManager.hpp>
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Context.hpp"
 #include "Graphics/Program.hpp"
@@ -46,7 +46,7 @@ int main(int argc, char * argv[]) {
 	Context::Initialize();
 	Context::SetCursorPositionCallback(CursorPositionCallback);
 
-	// AssetsManager::Get().Setup();
+	// AssetManager::Get().Setup();
 	Renderer renderer;
 	renderer.SetActiveCamera(&mCamera);
 	renderer.Setup();

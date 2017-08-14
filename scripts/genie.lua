@@ -19,6 +19,7 @@ project "tori"
 
 	configuration { "linux" }
 		links {
+      "stdc++fs",
 			"Xrandr",
 			"Xinerama",
 			"Xi",

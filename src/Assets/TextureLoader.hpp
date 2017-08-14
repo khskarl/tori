@@ -5,10 +5,13 @@
 
 #include <Graphics/Texture.hpp>
 
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 namespace Loader {
 
-Texture* LoadTexture (const std::string filename);
-Texture* LoadPanorama (const std::string filename);
+Texture* LoadTexture (const fs::path filepath);
+Texture* LoadPanorama (const fs::path filepath);
 
 void TexturesWindow (bool* p_open);
 

@@ -9,13 +9,9 @@
 #include <Log.hpp>
 #include <vector>
 
-#include <ImGui.hpp>
-
 namespace Loader {
 
-Texture* LoadTexture (const std::string filename) {
-	std::string filepath = "data/textures/" + filename;
-	LOG_INFO("Loading " + filepath);
+Texture* LoadTexture (const fs::path filepath) {
 	// stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	uint8_t* data = stbi_load(filepath.c_str(), &width, &height, &numChannels, 0);
@@ -49,7 +45,7 @@ Texture* LoadTexture (const std::string filename) {
 		stbi_image_free(data);
 
 		Texture* texture = new Texture();
-		texture->m_filename = filename;
+		texture->m_filename = filepath.stem().string();
 		texture->m_type     = Texture::Type::Texture2D;
 		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
@@ -60,17 +56,13 @@ Texture* LoadTexture (const std::string filename) {
 		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		return texture;
 	}	else {
-		LOG_ERROR("Failed to load texture" + filepath);
+		LOG_ERROR("Failed to load texture " + filepath.string());
 		stbi_image_free(data);
 		return nullptr;
 	}
 }
 
-Texture* LoadPanorama (const std::string filename) {
-	// If texture wasn't loaded, load it
-	std::string filepath = "data/textures/" + filename;
-	LOG_INFO("Loading " + filepath);
-
+Texture* LoadPanorama (const fs::path filepath) {
 	stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	float* data = stbi_loadf(filepath.c_str(), &width, &height, &numChannels, 0);
@@ -89,7 +81,7 @@ Texture* LoadPanorama (const std::string filename) {
 		stbi_image_free(data);
 
 		Texture* texture = new Texture();
-		texture->m_filename = filename;
+		texture->m_filename = filepath.stem().string();
 		texture->m_type     = Texture::Type::Cubemap;
 		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
@@ -100,7 +92,7 @@ Texture* LoadPanorama (const std::string filename) {
 		texture->m_minFilteringMode = (Texture::FilteringMode)  GL_LINEAR;
 		return texture;
 	} else {
-		LOG_ERROR("Failed to load texture" + filepath);
+		LOG_ERROR("Failed to load texture " + filepath.string());
 		stbi_image_free(data);
 		return nullptr;
 	}

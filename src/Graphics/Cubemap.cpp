@@ -2,11 +2,10 @@
 
 #include <Log.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Assets/AssetsManager.hpp>
-#include <Assets/TextureLoader.hpp>
+#include <Assets/AssetManager.hpp>
 
 Cubemap::Cubemap (std::string texture_name, std::string irradiance_name) {
-	m_mesh = AssetsManager::Get().GetMesh("cube.obj");
+	m_mesh = AssetManager::Get().GetMesh("cube.obj");
 	m_program = new Program("skybox.vs", "skybox.fs");
 	Setup(texture_name, irradiance_name);
 }
@@ -118,9 +117,9 @@ Texture* Cubemap::ConvertToCubemap (Texture* equirectangularTex) {
 }
 
 void Cubemap::Setup (std::string texture_name, std::string irradiance_name) {
-	Texture* color2D = Loader::LoadPanorama(texture_name);
+	Texture* color2D = AssetManager::Get().GetTexture(texture_name);
 	m_colorTexture = ConvertToCubemap(color2D);
 
-	Texture* irradiance2D = Loader::LoadPanorama(irradiance_name);
+	Texture* irradiance2D = AssetManager::Get().GetTexture(irradiance_name);
 	m_irradianceTexture = ConvertToCubemap(irradiance2D);
 }
