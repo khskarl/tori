@@ -1,6 +1,6 @@
 #include "Context.hpp"
 
-#include <iostream> // For logging
+#include <Log.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -48,7 +48,7 @@ bool Initialize () {
 	                           "I am a happy window :D", nullptr, nullptr);
 
 	if (mWindow == nullptr) {
-		std::cerr << "Failed to Create OpenGL Context\n";
+		LOG_ERROR("Failed to Create OpenGL Context");
 		return false;
 	}
 
@@ -60,14 +60,14 @@ bool Initialize () {
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
-		std::cerr << "Failed on glewInit()\n";
+		LOG_ERROR("Failed to initialize glew");
 		return false;
 	}
 
 	// Setup ImGui binding
 	ImGui_ImplGlfwGL3_Init(mWindow, true);
-	std::cerr << "OpenGL " << glGetString(GL_VERSION) << "\n";
-
+	std::string version = std::string((const char *)glGetString(GL_VERSION));
+	LOG_INFO("OpenGL " + version);
 	return true;
 }
 

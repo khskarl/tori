@@ -5,7 +5,8 @@
 #include <stb_image.h>
 
 #include <cassert>
-#include <iostream>
+#include <Types.hpp>
+#include <Log.hpp>
 #include <vector>
 
 #include <ImGui.hpp>
@@ -41,6 +42,7 @@ Texture* LoadTexture (const std::string filename) {
 
 	// If texture wasn't loaded, load it
 	std::string filepath = "data/textures/" + filename;
+	LOG_INFO("Loading " + filepath);
 	// stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	uint8_t* data = stbi_load(filepath.c_str(), &width, &height, &numChannels, 0);
@@ -80,9 +82,11 @@ Texture* LoadTexture (const std::string filename) {
 		texture->m_width    = (uint16_t) width;
 		texture->m_height   = (uint16_t) height;
 		m_textures.push_back(texture);
+
 		return texture;
 	}	else {
-		std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
+		// std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
+		LOG_ERROR("Failed to load texture" + filepath);
 		stbi_image_free(data);
 		return nullptr;
 	}
@@ -97,6 +101,8 @@ Texture* LoadPanorama (const std::string filename) {
 
 	// If texture wasn't loaded, load it
 	std::string filepath = "data/textures/" + filename;
+	LOG_INFO("Loading " + filepath);
+
 	stbi_set_flip_vertically_on_load(true);
 	int32_t width, height, numChannels;
 	float* data = stbi_loadf(filepath.c_str(), &width, &height, &numChannels, 0);
@@ -127,15 +133,11 @@ Texture* LoadPanorama (const std::string filename) {
 		m_textures.push_back(texture);
 		return texture;
 	} else {
-		std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
+		// std::cerr << "[ERROR] Failed to load texture " << filepath << "\n";
+		LOG_ERROR("Failed to load texture" + filepath);
 		stbi_image_free(data);
 		return nullptr;
 	}
-}
-
-Texture* LoadCubemap (const std::string filename) {
-	std::cerr << "LoadCubemap (const std::string filename) not implemented\n";
-	return nullptr;
 }
 
 // ------------- //
