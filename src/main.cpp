@@ -17,6 +17,7 @@
 #include "Graphics/Mesh.hpp"
 #include "Graphics/Camera.hpp"
 #include "Graphics/TextureLoader.hpp"
+#include "Graphics/Material.hpp"
 
 #include "GameObject.hpp"
 
@@ -41,10 +42,6 @@ static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 	mLastCursorPosition = { xpos, ypos };
 }
 
-void HandleGui () {
-
-}
-
 int main(int argc, char * argv[]) {
 	Context::Initialize();
 	Context::SetCursorPositionCallback(CursorPositionCallback);
@@ -53,26 +50,26 @@ int main(int argc, char * argv[]) {
 	renderer.SetActiveCamera(&mCamera);
 	renderer.Setup();
 
+	Material* woodfloor = new Material("woodfloor_albedo.png",
+	                                   "woodfloor_normal.png",
+	                                   "woodfloor_roughness.png",
+	                                   "woodfloor_metalness.png",
+	                                   "woodfloor_ao.png");
 	GameObject* sphere = new GameObject();
-	sphere->m_model = Model("sphere.obj",
-	                        "woodfloor_albedo.png",
-	                        "woodfloor_normal.png",
-	                        "woodfloor_roughness.png",
-	                        "woodfloor_metalness.png",
-	                        "woodfloor_ao.png");
+	sphere->m_model = Model("sphere.obj", woodfloor);
 	sphere->m_position = glm::vec3(0, 0, 5);
-
-	GameObject* bamboo = new GameObject();
-	bamboo->m_model = Model("sphere.obj",
-	                        "rusted_albedo.png",
-	                        "rusted_normal.png",
-	                        "rusted_roughness.png",
-	                        "rusted_metalness.png",
-	                        "rusted_ao.png");
-	bamboo->m_position = glm::vec3(5, 0, 5);
-
 	renderer.Submit(sphere);
-	renderer.Submit(bamboo);
+	
+	// GameObject* bamboo = new GameObject();
+	// bamboo->m_model = Model("sphere.obj",
+	//                         "rusted_albedo.png",
+	//                         "rusted_normal.png",
+	//                         "rusted_roughness.png",
+	//                         "rusted_metalness.png",
+	//                         "rusted_ao.png");
+	// bamboo->m_position = glm::vec3(5, 0, 5);
+	// renderer.Submit(bamboo);
+
 
 	// Game Loop
 	while ((Context::ShouldClose() || Context::IsKeyDown(GLFW_KEY_ESCAPE)) == false) {

@@ -42,7 +42,7 @@ project "tori"
 
   configuration { "gmake" }
     buildoptions_cpp {
-      "-std=c++14",
+      "-std=c++17",
     }
 
   configuration { "Debug" }

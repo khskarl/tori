@@ -4,24 +4,16 @@
 #include <Types.hpp>
 
 #include "Mesh.hpp"
-#include "Texture.hpp"
+#include "Material.hpp"
 
 class Model {
 private:
 public:
-	Mesh*    m_mesh    = nullptr;
-	Texture* m_albedo = nullptr;
-	Texture* m_normal = nullptr;
-	Texture* m_roughness = nullptr;
-	Texture* m_metalness = nullptr;
-	Texture* m_ao = nullptr;
-	
-	Model  (std::string mesh_name,
-	            std::string albedo_name,
-	            std::string normal_name,
-	            std::string roughness_name,
-	            std::string metalness_name,
-	            std::string ao_name);
+	Mesh*    p_mesh     = nullptr;
+	Material* p_material = nullptr;
+
+	Model  (std::string mesh_name, Material* material_name);
+	Model  (std::string mesh_name);
 	~Model ();
 };
 

@@ -105,18 +105,19 @@ void Renderer::RenderFrame () {
 	m_cubemap->BindIrradiance(5);
 
 	for (GameObject* const object : m_renderQueue) {
-		Model* const model = &object->m_model;
+		Model*    const model    = &object->m_model;
+		Material* const material = model->p_material;
 
-		model->m_albedo   ->Bind(0);
-		model->m_normal   ->Bind(1);
-		model->m_roughness->Bind(2);
-		model->m_metalness->Bind(3);
-		model->m_ao       ->Bind(4);
+		material->p_albedo   ->Bind(0);
+		material->p_normal   ->Bind(1);
+		material->p_roughness->Bind(2);
+		material->p_metalness->Bind(3);
+		material->p_occlusion->Bind(4);
 
 		glm::mat4 modelMatrix;
 		modelMatrix = glm::translate(modelMatrix, object->m_position);
 		m_mainProgram->SetUniform("model", modelMatrix);
-		model->m_mesh->Render();
+		model->p_mesh->Render();
 	}
 
 	// Render skybox
