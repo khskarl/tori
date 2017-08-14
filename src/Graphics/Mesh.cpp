@@ -3,7 +3,7 @@
 #include "MeshLoader.hpp"
 
 #include <vector>
-#include <iostream>
+#include <Log.hpp>
 
 Mesh::Mesh () {}
 
@@ -18,7 +18,7 @@ Mesh::~Mesh () {
 
 void Mesh::Setup () {
 	if (m_isSetup == true) {
-		std::cerr << "[ERROR] " << m_filename << " is already setup\n";
+		LOG_ERROR(m_filename + " is already setup");
 		return;
 	}
 	m_isSetup = true;

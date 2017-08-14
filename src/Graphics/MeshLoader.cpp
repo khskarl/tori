@@ -1,7 +1,7 @@
 
 #include "MeshLoader.hpp"
 
-#include <iostream>
+#include <Log.hpp>
 #include <vector>
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -45,19 +45,19 @@ Mesh* LoadMesh (const std::string filename) {
 	                               filepath.c_str());
 
 	if (!error_message.empty()) {
-		std::cerr << error_message << std::endl;
+		LOG_ERROR(error_message);
 	}
 
 	if (attrib.vertices.size() == 0) {
-		std::cerr << "[ERROR] No positions in " << filename << std::endl;
+		LOG_ERROR("No positions in " + filename);
 	}
 
 	if (attrib.texcoords.size() == 0) {
-		std::cerr << "[ERROR] No texture coordinates in " << filename << std::endl;
+		LOG_ERROR("No texture coordinates in " + filename);
 	}
 
 	if (attrib.normals.size() == 0) {
-		std::cerr << "[ERROR] No normals in " << filename << std::endl;
+		LOG_ERROR("No normals in " + filename);
 	}
 
 	if (!result) {

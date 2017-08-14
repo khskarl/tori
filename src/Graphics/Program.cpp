@@ -1,6 +1,6 @@
 #include "Program.hpp"
 
-#include <iostream>
+#include <Log.hpp>
 #include <fstream>
 #include <sstream>
 
@@ -19,7 +19,7 @@ bool Shader::CompileFromFile (std::string filename, Type type) {
 	std::ifstream file;
 	file.open(filepath);
 	if (!file.is_open()) {
-		std::cerr << "[ERROR] Failed to load '" << filepath << "'\n";
+		LOG_ERROR("Failed to load " + filepath);
 	}
 
 	std::stringstream stream;
@@ -44,13 +44,13 @@ bool Shader::CompileFromText (std::string source, Type type) {
 		glGetShaderInfoLog(id, 512, NULL, error_log);
 		switch (type) {
 			case Type::Vertex:
-			std::cerr << "[VERTEX SHADER COMPILATION FAILED]\n" << error_log << "\n";
+			LOG_ERROR("<VERTEX SHADER FAILED TO COMPILE>\n" + std::string(error_log));
 			break;
 			case Type::Fragment:
-			std::cerr << "[FRAGMENT SHADER COMPILATION FAILED]\n" << error_log << "\n";
+			LOG_ERROR("<FRAGMENT SHADER FAILED TO COMPILE>\n" + std::string(error_log));
 			break;
 			default:
-			std::cerr << "[UNKNOWN SHADER COMPILATION FAILED]\n" << error_log << "\n";
+			LOG_ERROR("<UNKNOWN SHADER FAILED TO COMPILE>\n" + std::string(error_log));
 			break;
 		}
 
@@ -104,7 +104,7 @@ void Program::Link () {
 	{
 		char error_log[512];
 		glGetProgramInfoLog(new_program_id, 512, NULL, error_log);
-		std::cerr << "[LINKING FAILED]\n" << error_log << std::endl;
+		LOG_ERROR("<LINKING FAILED>\n" + std::string(error_log));
 	}
 	else
 	{
