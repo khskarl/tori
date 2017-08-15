@@ -66,6 +66,25 @@ void Grid (size_t const width, size_t const depth, Mesh* out_mesh) {
 			out_mesh->m_vertices.colors.push_back(color);
 		}
 	}
+
+	// const size_t num_quads = (width * depth - 1) / 2;
+	const size_t quads_width = width - 1;
+	const size_t quads_depth = depth - 1;
+	for (size_t i = 0; i < quads_depth; i++) {
+		for (size_t j = 0; j < quads_width; j++) {
+			size_t index = i * quads_width + j;
+			out_mesh->m_indices.push_back(index);
+			out_mesh->m_indices.push_back(index + 1);
+			out_mesh->m_indices.push_back(index + quads_width);
+
+			out_mesh->m_indices.push_back(index + 1);
+			out_mesh->m_indices.push_back(index + quads_width + 1);
+			out_mesh->m_indices.push_back(index + quads_width);
+		}
+	}
+
+	out_mesh->m_filename = "generated_grid";
+	out_mesh->Setup();
 }
 
 }
