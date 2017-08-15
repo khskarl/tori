@@ -28,7 +28,6 @@ Material* LoadMaterial (const std::string filepath) {
 	                                  roughness_name,
 	                                  metalness_name,
 	                                  occlusion_name);
-
 	return material;
 }
 

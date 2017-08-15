@@ -45,7 +45,7 @@ Texture* LoadTexture (const fs::path filepath) {
 		stbi_image_free(data);
 
 		Texture* texture = new Texture();
-		texture->m_filename = filepath.stem().string();
+		texture->m_filename = filepath.filename().string();
 		texture->m_type     = Texture::Type::Texture2D;
 		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
@@ -81,7 +81,7 @@ Texture* LoadPanorama (const fs::path filepath) {
 		stbi_image_free(data);
 
 		Texture* texture = new Texture();
-		texture->m_filename = filepath.stem().string();
+		texture->m_filename = filepath.filename().string();
 		texture->m_type     = Texture::Type::Cubemap;
 		texture->m_id       = textureID;
 		texture->m_width    = (uint16_t) width;
@@ -97,33 +97,4 @@ Texture* LoadPanorama (const fs::path filepath) {
 		return nullptr;
 	}
 }
-
-// ------------- //
-// GUI Functions //
-// ------------- //
-bool ImHelpTexturesNamesGetter (void* data, int n, const char** out_text) {
-	const std::vector<Texture*>* v = (std::vector<Texture*>*) data;
-	*out_text = ((*v)[n])->m_filename.c_str();
-	return true;
-}
-
-void TexturesWindow (bool* p_open) {
-	// ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
-	//
-	// if (ImGui::Begin("Textures", p_open))
-	// {
-	// 	static int selected_item_index = 0;
-	// 	ImGui::BeginChild("texture list", ImVec2(200, 0), true);
-	// 		ImGui::PushItemWidth(-1);
-	// 		ImGui::ListBox("", &selected_item_index, ImHelpTexturesNamesGetter, &m_textures, m_textures.size(), m_textures.size());
-	// 	ImGui::EndChild();
-	//
-	// 	ImGui::SameLine();
-	//
-	// 	ImGui::TextureInfo(m_textures[selected_item_index]);
-	//
-	// }
-	// ImGui::End();
-}
-
 }

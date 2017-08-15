@@ -149,12 +149,12 @@ void Renderer::RendererWindow (bool* p_open) {
 		if (ImGui::Button("Reload shaders")) m_mainProgram->Reload();
 		ImGui::Checkbox("Wireframe", &m_bRenderWireframe);
 		ImGui::Text("%.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate,
-		ImGui::GetIO().Framerate);
-		ImGui::Image((void*)m_mainFramebuffer.GetColorTextureHandle(),
+			1000.0f / ImGui::GetIO().Framerate,
+			ImGui::GetIO().Framerate);
+		ImGui::Image((void*) m_mainFramebuffer.GetColorTextureHandle(),
 		             ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::SliderFloat("Exposure", &m_exposureLevel, 0.1f, 5.0f);
 
-		ImGui::End();
 	}
+	ImGui::End();
 }

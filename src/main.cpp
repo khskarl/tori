@@ -18,7 +18,6 @@
 #include "Graphics/Mesh.hpp"
 #include "Graphics/Camera.hpp"
 #include "Graphics/Material.hpp"
-
 #include "GameObject.hpp"
 
 // General variables
@@ -27,7 +26,7 @@ glm::vec2 mLastCursorPosition(0, 0);
 glm::ivec2 mWindowSize(1280, 800);
 
 // Camera
-Camera mCamera(glm::vec3(0, 5, 0), glm::vec3(0, -1, 1), mWindowSize.x, mWindowSize.y);
+Camera mCamera(glm::vec3(0, 5, -5), glm::vec3(0, -1, 1), mWindowSize.x, mWindowSize.y);
 
 static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
@@ -53,7 +52,7 @@ int main(int argc, char * argv[]) {
 
 	GameObject* sphere = new GameObject();
 	sphere->m_model = Model("sphere.obj", "woodfloor.mat");
-	sphere->m_position = glm::vec3(0, 0, 5);
+	sphere->m_position = glm::vec3(0, 0, 0);
 	renderer.Submit(sphere);
 
 	// GameObject* bamboo = new GameObject();
@@ -66,7 +65,6 @@ int main(int argc, char * argv[]) {
 	// bamboo->m_position = glm::vec3(5, 0, 5);
 	// renderer.Submit(bamboo);
 
-
 	// Game Loop
 	while ((Context::ShouldClose() || Context::IsKeyDown(GLFW_KEY_ESCAPE)) == false) {
 		Context::PollEvents();
@@ -74,6 +72,7 @@ int main(int argc, char * argv[]) {
 		{
 			static bool show_renderer_window = true;
 			static bool show_texture_window  = true;
+			static bool show_material_window  = true;
 			if (ImGui::BeginMainMenuBar())
 			{
 				if (ImGui::BeginMenu("Renderer"))
@@ -82,9 +81,10 @@ int main(int argc, char * argv[]) {
 					ImGui::EndMenu();
 				}
 
-				if (ImGui::BeginMenu("Data"))
+				if (ImGui::BeginMenu("Assets"))
 				{
 					ImGui::MenuItem("Textures", NULL, &show_texture_window);
+					ImGui::MenuItem("Materials", NULL, &show_material_window);
 					ImGui::EndMenu();
 				}
 
@@ -96,7 +96,11 @@ int main(int argc, char * argv[]) {
 			}
 
 			if (show_texture_window) {
-				// Data::TexturesWindow(&show_texture_window);
+				AssetManager::Get().TexturesWindow(&show_texture_window);
+			}
+
+			if (show_material_window) {
+				AssetManager::Get().MaterialsWindow(&show_material_window);
 			}
 		}
 

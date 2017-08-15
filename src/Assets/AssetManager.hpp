@@ -1,5 +1,5 @@
-#ifndef IMGUI_HPP
-#define IMGUI_HPP
+#ifndef ASSET_MANAGER_HPP
+#define ASSET_MANAGER_HPP
 
 #include <Types.hpp>
 
@@ -39,8 +39,9 @@ public:
 	Material* FindLoadedMaterial (const std::string filename);
 	Material* GetMaterial (const std::string filename);
 
+	// ImGui
+	void TexturesWindow  (bool* p_open);
+	void MaterialsWindow (bool* p_open);
 };
-
-
 
 #endif

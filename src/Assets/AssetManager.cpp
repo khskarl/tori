@@ -43,7 +43,7 @@ Texture* AssetManager::FindLoadedTexture (const std::string filename) {
 Texture* AssetManager::GetTexture (const std::string _filename) {
 	// Check if texture is already loaded;
 	const fs::path filepath(PATH_TEXTURES + _filename);
-	if (auto tex = FindLoadedTexture(filepath.stem().string()); tex != nullptr) {
+	if (auto tex = FindLoadedTexture(_filename); tex != nullptr) {
 		return tex;
 	}
 
@@ -103,11 +103,68 @@ Material* AssetManager::FindLoadedMaterial (const std::string filename) {
 Material* AssetManager::GetMaterial (const std::string _filename) {
 	const fs::path filepath(PATH_MATERIALS + _filename);
 	// Check if material is already loaded;
-	if (auto material = FindLoadedMaterial(filepath.stem().string()); material != nullptr) {
+	if (auto material = FindLoadedMaterial(filepath.filename().string()); material != nullptr) {
 		return material;
 	}
 
 	Material* const material = Loader::LoadMaterial (filepath.string());
+	material->m_filename = filepath.filename().string();
+
 	m_materials.push_back(material);
 	return material;
+}
+
+
+// ----- //
+// IMGUI //
+// ----- //
+#include <ImGui.hpp>
+bool ImHelpTexturesNamesGetter (void* data, int n, const char** out_text) {
+	const std::vector<Texture*>* v = (std::vector<Texture*>*) data;
+	*out_text = ((*v)[n])->m_filename.c_str();
+	return true;
+}
+
+bool ImHelpMaterialsNamesGetter (void* data, int n, const char** out_text) {
+	const std::vector<Material*>* v = (std::vector<Material*>*) data;
+	*out_text = ((*v)[n])->m_filename.c_str();
+	return true;
+}
+
+void AssetManager::TexturesWindow (bool* p_open) {
+	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+
+	if (ImGui::Begin("Textures", p_open))
+	{
+		static int selected_item_index = 0;
+		ImGui::BeginChild("texture list", ImVec2(200, 0), true);
+			ImGui::PushItemWidth(-1);
+			ImGui::ListBox("", &selected_item_index, ImHelpTexturesNamesGetter, &m_textures, m_textures.size(), m_textures.size());
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::TextureInfo(m_textures[selected_item_index]);
+
+	}
+	ImGui::End();
+}
+
+void AssetManager::MaterialsWindow (bool* p_open) {
+	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+
+	if (ImGui::Begin("Materials", p_open))
+	{
+		static int selected_item = 0;
+		ImGui::BeginChild("materials list", ImVec2(200, 0), true);
+			ImGui::PushItemWidth(-1);
+			ImGui::ListBox("", &selected_item, ImHelpMaterialsNamesGetter, &m_materials, m_materials.size(), m_textures.size());
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::MaterialInfo(m_materials[selected_item]);
+
+	}
+	ImGui::End();
 }
