@@ -20,9 +20,9 @@ public:
 	std::vector<GameObject*> m_renderQueue;
 	std::vector<Texture*> m_textures;
 
-	uint32_t m_quadVAO;
+	Mesh* p_quadMesh = nullptr;
 	Framebuffer m_mainFramebuffer;
-	Program* m_screenProgram;
+	Program* m_screenProgram = nullptr;
 
 	float m_exposureLevel = 1.0f;
 

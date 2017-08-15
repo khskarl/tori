@@ -70,9 +70,9 @@ int main(int argc, char * argv[]) {
 		Context::PollEvents();
 
 		{
-			static bool show_renderer_window = true;
-			static bool show_texture_window  = true;
-			static bool show_material_window  = true;
+			static bool show_renderer_window = false;
+			static bool show_texture_window  = false;
+			static bool show_material_window = false;
 			if (ImGui::BeginMainMenuBar())
 			{
 				if (ImGui::BeginMenu("Renderer"))

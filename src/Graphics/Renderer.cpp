@@ -9,6 +9,7 @@
 #include <imgui/imgui.h>
 
 #include <Assets/AssetManager.hpp>
+#include <Graphics/Primitives.hpp>
 
 #include <Settings.hpp>
 
@@ -30,29 +31,8 @@ void Renderer::Setup () {
 	// m_lightSources.push_back(LightSource(LightSource::Type::Point));
 	// m_lightSources[1].position = glm::vec3( 2,  -5,  5);
 	// m_lightSources[1].color    = glm::vec3(50.f, 10.f, 10.f);
-
-	// Setup main framebuffer
-	float quadVertices[] = {
-// Positions   | UVs
-	-1.0f,  1.0f,  0.0f, 1.0f,
-	-1.0f, -1.0f,  0.0f, 0.0f,
-	 1.0f, -1.0f,  1.0f, 0.0f,
-
-	-1.0f,  1.0f,  0.0f, 1.0f,
-	 1.0f, -1.0f,  1.0f, 0.0f,
-	 1.0f,  1.0f,  1.0f, 1.0f
-	};
-	// screen quad VAO
-	uint32_t quadVBO;
-	glGenVertexArrays(1, &m_quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(m_quadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	p_quadMesh = new Mesh();
+	Primitives::Quad(p_quadMesh);
 
 	// Setup main framebuffer
 	m_mainFramebuffer.Setup(Settings::ScreenWidth, Settings::ScreenHeight);
@@ -125,11 +105,10 @@ void Renderer::RenderFrame () {
 	//
 	m_screenProgram->Use();
 	m_screenProgram->SetUniform1f("exposureLevel", m_exposureLevel);
-	glBindVertexArray(m_quadVAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_mainFramebuffer.GetColorTextureHandle());
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	p_quadMesh->Render();
+	
 	ImGui::Render();
 }
 
