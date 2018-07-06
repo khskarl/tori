@@ -2,6 +2,8 @@
 
 Tori is a work in progress game engine made for studying game engine development and modern real time rendering techniques. It uses a Physically Based Rendering workflow, OpenGL and is targeted for Linux, Windows and MacOS.
 
+![Tori](tori.png)
+
 ## Dependencies
 - GLFW3
 - GLEW
